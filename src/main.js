@@ -1,6 +1,6 @@
-// Tiken Interior – 23' × 23' house: L-shaped living & dining + front room.
+// Tiken Interior – 23' × 23' house: living hall, L-shaped bedroom + front room.
 // A suspended ceiling is hung below the open hip roof, with a raised tray over
-// the living area, a circular dome over dining, and a shadow-gap LED edge light
+// the living area, a circular dome over the bed, and a shadow-gap LED edge light
 // running around every wall.
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -48,7 +48,7 @@ const tray = {
   dx0: LIV.x0 + TRAY_DRUM, dx1: LIV.x1 - TRAY_DRUM, dz0: LIV.z0 + TRAY_DRUM, dz1: LIV.z1 - TRAY_DRUM,
 };
 const LC = new THREE.Vector3((tray.ox0 + tray.ox1) / 2, 0, (tray.oz0 + tray.oz1) / 2);
-// Dining dome (circular) centred in the L extension
+// Bedroom dome (circular) centred in the L extension
 const DC = new THREE.Vector3(S / 2, 0, (ZP + S) / 2);
 const DOME_R = 1.0, DOME_DRUM = 1.2;
 
@@ -126,11 +126,15 @@ const M = {
   book1: new THREE.MeshStandardMaterial({ color: '#2f3b36', roughness: 0.8 }),
   book2: new THREE.MeshStandardMaterial({ color: '#c8b593', roughness: 0.8 }),
   book3: new THREE.MeshStandardMaterial({ color: '#8b3f2a', roughness: 0.8 }),
+  sheet: new THREE.MeshStandardMaterial({ color: '#f2eee6', roughness: 0.95, bumpMap: tex.fine, bumpScale: 0.2 }),
+  curtain: new THREE.MeshStandardMaterial({ color: '#cbbca3', roughness: 1, side: THREE.DoubleSide, bumpMap: tex.fine, bumpScale: 0.4 }),
+  glass2: new THREE.MeshStandardMaterial({ color: '#e8d9c0', roughness: 0.1, transparent: true, opacity: 0.6 }),
+  bedOpal: new THREE.MeshStandardMaterial({ color: '#f4efe6', roughness: 0.4, emissive: '#ffd6a0', emissiveIntensity: 1 }),
   opal: new THREE.MeshStandardMaterial({ color: '#f4efe6', roughness: 0.4, emissive: '#ffd6a0', emissiveIntensity: 1 }),
 };
 const led = () => new THREE.MeshBasicMaterial({ color: 0xffffff });
 const LED = {
-  cove: led(), edge: led(), down: led(), pendant: led(), accent: led(),
+  cove: led(), edge: led(), down: led(), pendant: led(), accent: led(), halo: led(),
   lamp: new THREE.MeshStandardMaterial({ color: '#efe4d0', roughness: 1, side: THREE.DoubleSide, emissive: '#ffcf96', emissiveIntensity: 1 }),
 };
 
@@ -260,11 +264,11 @@ const DOOR = (u, w = 0.95, kind = 'door', vent = false) => ({ u, w, y0: 0, y1: 2
 
 // Rear wall (z = -S, u = x): two windows with breeze-block vents
 buildWall({ name: 'back', centre: V(0, 0, -S), normal: V(0, 0, 1), length: 2 * S + 2 * TE, thick: TE, openings: [WIN(LC.x), WIN(2.15)] });
-// Right wall (x = +S, u = z): side door into the hall, dining window
-buildWall({ name: 'right', centre: V(S, 0, 0), normal: V(-1, 0, 0), length: 2 * S, thick: TE, openings: [DOOR(-1.1, 0.95, 'door', true), WIN(DC.z, 1.2)] });
-// Front wall (z = +S, u = -x): dining window + front-room glazed sliders (main entrance)
+// Right wall (x = +S, u = z): side door into the hall; wardrobe wall in the bedroom
+buildWall({ name: 'right', centre: V(S, 0, 0), normal: V(-1, 0, 0), length: 2 * S, thick: TE, openings: [DOOR(-1.1, 0.95, 'door', true)] });
+// Front wall (z = +S, u = -x): bedroom window + front-room glazed sliders (main entrance)
 buildWall({ name: 'front', centre: V(0, 0, S), normal: V(0, 0, -1), length: 2 * S + 2 * TE, thick: TE,
-  openings: [WIN(-DC.x, 1.4), { u: 1.85, w: 2.0, y0: 0, y1: 2.15, kind: 'slider', vent: true }] });
+  openings: [WIN(-1.4, 1.0), { u: 1.85, w: 2.0, y0: 0, y1: 2.15, kind: 'slider', vent: true }] });
 // Left wall (x = -S, u = -z): solid TV wall + front-room window
 buildWall({ name: 'left', centre: V(-S, 0, 0), normal: V(1, 0, 0), length: 2 * S, thick: TE, openings: [WIN(-(ZP + S) / 2, 1.1)] });
 // Internal walls of the front room (two-sided). Rear wall: u = -(x - cx)
@@ -378,7 +382,7 @@ edgeLight(F_POLY);
   }
 }
 
-// --- Dining dome: circular cove, drum and raised disc ---
+// --- Bedroom dome: circular cove, drum and raised disc ---
 {
   mesh(new THREE.CylinderGeometry(DOME_R + 0.008, DOME_R + 0.008, LIP_TOP - BAND_TOP, 96, 1, true), M.drum, DC.x, (LIP_TOP + BAND_TOP) / 2, DC.z, ceiling, NOSHADOW);
   mesh(new THREE.CylinderGeometry(DOME_DRUM, DOME_DRUM, RAISED - BAND_TOP, 96, 1, true), M.drum, DC.x, (RAISED + BAND_TOP) / 2, DC.z, ceiling, NOSHADOW);
@@ -403,9 +407,9 @@ edgeLight(F_POLY);
     [-S + 0.3, LC.z - 0.95, V(-S, 0.6, LC.z - 0.95), 'graze'],
     [-S + 0.3, LC.z + 0.95, V(-S, 0.6, LC.z + 0.95), 'graze'],
     [0.3, -S + 0.3], [0.3, ZP - 0.3],
-    [1.6, -2.3, V(2.2, 0, -2.6)], [2.9, -2.3],
+    [1.6, -2.3, V(2.2, 0.74, -2.2)], [2.9, -2.3],
     [1.6, -0.3], [2.9, -0.3, V(2.9, 0, -0.3)],
-    [0.35, DC.z, V(0, 1.7, DC.z), 'art'], [S - 0.3, ZP + 0.3], [S - 0.3, S - 0.3],
+    [0.35, DC.z, V(0, 1.7, DC.z), 'art'], [2.2, ZP + 0.3], [S - 0.3, S - 0.3, V(2.85, 0.8, S - 0.25)],
     [-2.6, ZP + 0.85, V(-2.6, 0, ZP + 0.85)], [-1.0, ZP + 0.85], [-2.6, S - 0.55], [-1.0, S - 0.55, V(-1.0, 0, S - 0.55)],
   ];
   for (const [x, z, target, kind] of spots) {
@@ -440,18 +444,19 @@ edgeLight(F_POLY);
   ceiling.add(pl);
   lights.pendant.push(pl);
 }
-// --- Dining: cluster of three opal globes ---
+// --- Hall dining: cluster of three opal globes hung from the ceiling ---
 {
-  for (const [dx, y, dz, r] of [[0, 2.0, 0, 0.16], [0.28, 2.15, 0.12, 0.12], [-0.22, 2.24, -0.14, 0.11]]) {
-    mesh(new THREE.SphereGeometry(r, 32, 20), M.opal, DC.x + dx, y, DC.z + dz, ceiling, NOSHADOW);
-    mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 16), M.brass, DC.x + dx, y + r + 0.01, DC.z + dz, ceiling, NOSHADOW);
-    const len = RAISED - y - r;
-    mesh(new THREE.CylinderGeometry(0.002, 0.002, len, 4), M.black, DC.x + dx, y + r + len / 2, DC.z + dz, ceiling, NOSHADOW);
+  const C = V(2.2, 0, -2.2);
+  for (const [dx, y, dz, r] of [[0, 1.6, 0, 0.15], [0.24, 1.76, 0.1, 0.11], [-0.2, 1.84, -0.12, 0.1]]) {
+    mesh(new THREE.SphereGeometry(r, 32, 20), M.opal, C.x + dx, y, C.z + dz, ceiling, NOSHADOW);
+    mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 16), M.brass, C.x + dx, y + r + 0.01, C.z + dz, ceiling, NOSHADOW);
+    const len = BAND_BOTTOM - y - r;
+    mesh(new THREE.CylinderGeometry(0.002, 0.002, len, 4), M.black, C.x + dx, y + r + len / 2, C.z + dz, ceiling, NOSHADOW);
   }
-  mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.015, 32), M.brass, DC.x, RAISED - 0.008, DC.z, ceiling, NOSHADOW);
+  mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.015, 32), M.brass, C.x, BAND_BOTTOM - 0.008, C.z, ceiling, NOSHADOW);
   const pl = new THREE.PointLight(0xffffff, 0, 7, 2);
-  pl.position.set(DC.x, 1.85, DC.z);
-  pl.userData.k = 2.6;
+  pl.position.set(C.x, 1.45, C.z);
+  pl.userData.k = 2.2;
   ceiling.add(pl);
   lights.pendant.push(pl);
 }
@@ -640,42 +645,138 @@ box(1.4, 0.42, 0.38, M.walnut, LC.x, 0.21, -S + 0.19);
 mesh(new THREE.SphereGeometry(0.11, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), M.ceramic, LC.x - 0.4, 0.42, -S + 0.2);
 box(0.3, 0.06, 0.22, M.book1, LC.x + 0.35, 0.45, -S + 0.2);
 
-// Reading nook (hall, right-rear corner)
-loungeChair(2.6, -2.75, -0.7);
-rbox(0.5, 0.36, 0.45, 0.06, M.leather, 1.95, 0.18, -2.25).rotation.y = -0.6;
-floorLamp(3.15, -2.15);
-snakePlant(3.15, -3.15);
+// Compact dining for four (hall, right-rear corner by the window)
+const HD = V(2.2, 0, -2.2);
+{
+  mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.04, 96), M.walnut, HD.x, 0.74, HD.z);
+  mesh(new THREE.CylinderGeometry(0.14, 0.26, 0.7, 48), M.trav, HD.x, 0.35, HD.z);
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+    diningChair(HD.x + Math.cos(a) * 0.74, HD.z + Math.sin(a) * 0.74, Math.atan2(-Math.cos(a), -Math.sin(a)));
+  }
+  const vase = new THREE.LatheGeometry([[0, 0], [0.07, 0], [0.09, 0.05], [0.05, 0.16], [0.04, 0.2]].map(([x, y]) => new THREE.Vector2(x, y)), 40);
+  mesh(vase, M.stoneware, HD.x, 0.76, HD.z);
+  const r1 = TX.rng(77);
+  for (let i = 0; i < 5; i++) {
+    const len = 0.3 + r1() * 0.2;
+    mesh(new THREE.CylinderGeometry(0.002, 0.003, len, 4), M.bark, HD.x, 0.94 + len / 2, HD.z, scene, { cast: false }).rotation.set((r1() - 0.5) * 0.8, 0, (r1() - 0.5) * 0.8);
+  }
+}
+floorLamp(0.72, -3.2);
+snakePlant(3.2, -0.25, 23, 0.9);
 
 // ---------------------------------------------------------------------------
-// Dining (L extension)
+// Partition between living (hall) and bedroom (L extension):
+// a fixed walnut slat screen + a full-height linen curtain on a ceiling track
 // ---------------------------------------------------------------------------
+const SCREEN_X1 = 1.5;          // slats from x = 0 to here, curtain from here to the right wall
+const curtainState = { k: 1 };   // 1 = closed, 0 = open (animated)
+let curtain;
 {
-  const r = 0.66;
-  mesh(new THREE.CylinderGeometry(r, r, 0.04, 96), M.walnut, DC.x, 0.74, DC.z);
-  mesh(new THREE.CylinderGeometry(0.18, 0.32, 0.7, 48), M.trav, DC.x, 0.35, DC.z);
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
-    diningChair(DC.x + Math.cos(a) * 0.86, DC.z + Math.sin(a) * 0.86, Math.atan2(-Math.cos(a), -Math.sin(a)));
-  }
-  const vase = new THREE.LatheGeometry([[0, 0], [0.08, 0], [0.1, 0.05], [0.06, 0.18], [0.05, 0.22]].map(([x, y]) => new THREE.Vector2(x, y)), 40);
-  mesh(vase, M.stoneware, DC.x, 0.76, DC.z);
-  const r1 = TX.rng(77);
-  for (let i = 0; i < 6; i++) {
-    const len = 0.35 + r1() * 0.25;
-    mesh(new THREE.CylinderGeometry(0.002, 0.003, len, 4), M.bark, DC.x, 0.98 + len / 2, DC.z, scene, { cast: false }).rotation.set((r1() - 0.5) * 0.8, 0, (r1() - 0.5) * 0.8);
-  }
-  // buffet + art on the front-room wall (facing +x)
+  const h = BAND_BOTTOM;
+  const n = 15, pitch = SCREEN_X1 / n;
+  for (let i = 0; i < n; i++) box(0.045, h - 0.04, 0.07, M.walnut, pitch * (i + 0.5), h / 2, ZP, scene);
+  box(SCREEN_X1, 0.04, 0.09, M.walnut, SCREEN_X1 / 2, 0.02, ZP, scene);
+  // recessed curtain track in the ceiling band
+  box(S - SCREEN_X1, 0.012, 0.035, M.black, (S + SCREEN_X1) / 2, BAND_BOTTOM - 0.006, ZP + 0.06, ceiling, NOSHADOW);
+  const w = S - SCREEN_X1 - 0.02, ch = BAND_BOTTOM - 0.04;
+  const geo = new THREE.PlaneGeometry(w, ch, 160, 1);
+  const p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) p.setZ(i, Math.sin(((p.getX(i) + w / 2) / w) * Math.PI * 2 * 14) * 0.035);
+  geo.translate(-w / 2, 0, 0); // pivot on the right edge so it stacks against the wall when open
+  geo.computeVertexNormals();
+  curtain = mesh(geo, M.curtain, S - 0.01, ch / 2 + 0.015, ZP + 0.06, scene);
+}
+
+// ---------------------------------------------------------------------------
+// Bedroom (L extension)
+// ---------------------------------------------------------------------------
+const bedLights = [];
+{
+  // bed wall: headboard against the solid wall shared with the front room (faces +x)
   const g = group(0, DC.z, Math.PI / 2, interior);
-  box(1.8, 0.7, 0.45, M.walnut, 0, 0.45, 0.225, g);
-  for (const ux of [-0.8, 0.8]) box(0.03, 0.1, 0.03, M.black, ux, 0.05, 0.225, g);
-  for (let i = 1; i < 3; i++) box(0.004, 0.62, 0.002, M.black, -0.9 + i * 0.6, 0.45, 0.451, g, NOSHADOW);
-  box(1.46, 1.06, 0.04, M.black, 0, 1.75, 0.02, g);
-  mesh(new THREE.PlaneGeometry(1.4, 1.0), M.art, 0, 1.75, 0.041, g, { cast: false });
-  const lampG = new THREE.LatheGeometry([0, 0.08, 0.1, 0.06, 0.05].map((rr, i) => new THREE.Vector2(rr, i * 0.06)), 32);
-  mesh(lampG, M.ceramic, -0.65, 0.8, 0.22, g);
-  mesh(new THREE.SphereGeometry(0.11, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), M.linen, -0.65, 1.06, 0.22, g);
-  mesh(new THREE.TorusKnotGeometry(0.06, 0.018, 100, 12), M.brass, 0.6, 0.9, 0.22, g);
-  snakePlant(S - 0.3, S - 0.3, 31, 0.9);
+  box(2.6, 1.2, 0.03, M.walnut2, 0, 0.6, 0.015, g);
+  box(2.5, 0.008, 0.012, LED.accent, 0, 1.205, 0.02, g, NOSHADOW);
+  lights.accent.push(rectLight(2.5, 0.04, V(0.04, 1.21, DC.z), V(-0.3, 1, 0), V(0, 0, 1))); // wall wash above the panel
+  rbox(1.8, 0.9, 0.1, 0.04, M.olive, 0, 0.78, 0.08, g);
+  for (let i = -3; i <= 3; i++) box(0.006, 0.82, 0.004, M.black, i * 0.25, 0.78, 0.131, g, NOSHADOW); // channel tufting
+  // platform bed
+  box(1.62, 0.08, 1.95, M.black, 0, 0.04, 1.12, g);
+  rbox(1.72, 0.24, 2.05, 0.03, M.walnut, 0, 0.2, 1.15, g);
+  rbox(1.6, 0.24, 1.98, 0.08, M.sheet, 0, 0.42, 1.14, g);
+  rbox(1.68, 0.07, 1.5, 0.035, M.sheet, 0, 0.56, 1.42, g);
+  rbox(1.68, 0.09, 0.22, 0.04, M.sheet, 0, 0.57, 0.66, g);
+  const blanket = new THREE.MeshStandardMaterial({ color: '#a4583a', roughness: 1, bumpMap: tex.noise, bumpScale: 0.5 });
+  rbox(1.74, 0.03, 0.5, 0.012, blanket, 0, 0.61, 1.85, g);
+  rbox(1.74, 0.3, 0.025, 0.012, blanket, 0, 0.46, 2.11, g);
+  for (const sx of [-0.4, 0.4]) rbox(0.68, 0.17, 0.42, 0.08, M.sheet, sx, 0.64, 0.38, g).rotation.x = -0.35;
+  rbox(0.48, 0.38, 0.13, 0.06, M.terracotta, -0.25, 0.75, 0.6, g).rotation.set(-0.3, 0.1, 0.05);
+  rbox(0.44, 0.34, 0.12, 0.06, M.linen, 0.27, 0.73, 0.62, g).rotation.set(-0.3, -0.1, -0.05);
+  // floating nightstands + bedside pendants
+  for (const sx of [-1.1, 1.1]) {
+    box(0.42, 0.18, 0.36, M.walnut, sx, 0.5, 0.21, g);
+    box(0.38, 0.004, 0.002, M.black, sx, 0.5, 0.391, g, NOSHADOW);
+    box(0.18, 0.04, 0.14, sx < 0 ? M.book1 : M.book2, sx + 0.06, 0.61, 0.2, g);
+    mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.12, 20), M.ceramic, sx - 0.1, 0.65, 0.2, g);
+    const wz = DC.z - sx, wx = 0.24;
+    mesh(new THREE.SphereGeometry(0.09, 32, 20), M.bedOpal, wx, 1.28, wz, ceiling, NOSHADOW);
+    mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.03, 12), M.brass, wx, 1.38, wz, ceiling, NOSHADOW);
+    mesh(new THREE.CylinderGeometry(0.0015, 0.0015, BAND_BOTTOM - 1.39, 4), M.black, wx, (BAND_BOTTOM + 1.39) / 2, wz, ceiling, NOSHADOW);
+    mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.01, 16), M.brass, wx, BAND_BOTTOM - 0.005, wz, ceiling, NOSHADOW);
+    const l = new THREE.PointLight(0xffc98a, 0, 4, 2);
+    l.position.set(wx + 0.05, 1.2, wz);
+    l.userData.k = 0.6;
+    ceiling.add(l);
+    lampLights.push(l);
+  }
+  // art above the headboard
+  box(1.06, 0.62, 0.03, M.black, 0, 1.78, 0.015, g);
+  mesh(new THREE.PlaneGeometry(1.0, 0.56), M.art, 0, 1.78, 0.032, g, { cast: false });
+  // rug
+  mesh(new THREE.BoxGeometry(2.6, 0.012, 1.9), M.rug, 1.55, 0.006, DC.z, scene, { cast: false });
+}
+
+// Full-height built-in wardrobe on the right wall
+{
+  const len = 1.8, dep = 0.6, top = BAND_BOTTOM - 0.002;
+  const g = group(S, 1.85, -Math.PI / 2, interior);
+  box(len - 0.04, 0.08, dep - 0.06, M.black, 0, 0.04, dep / 2 - 0.03, g);
+  box(len, top - 0.08, dep, M.walnut, 0, (top + 0.08) / 2, dep / 2, g);
+  for (let i = 1; i < 4; i++) box(0.006, top - 0.12, 0.004, M.black, -len / 2 + i * (len / 4), (top + 0.08) / 2, dep + 0.001, g, NOSHADOW);
+  box(len - 0.02, 0.006, 0.004, M.black, 0, 2.2, dep + 0.001, g, NOSHADOW);
+  for (const hx of [-0.47, -0.43, 0.43, 0.47]) box(0.012, 0.5, 0.025, M.brass, hx, 1.1, dep + 0.012, g);
+}
+
+// Dressing table with backlit arched mirror (front wall, by the wardrobe)
+{
+  const g = group(2.85, S, Math.PI, interior);
+  box(1.0, 0.04, 0.45, M.walnut, 0, 0.76, 0.225, g);
+  box(1.0, 0.14, 0.42, M.walnut, 0, 0.67, 0.21, g);
+  box(0.5, 0.004, 0.002, M.black, 0, 0.67, 0.421, g, NOSHADOW);
+  for (const sx of [-0.47, 0.47]) box(0.03, 0.6, 0.03, M.brass, sx, 0.3, 0.4, g);
+  const arch = (w, h) => {
+    const s = new THREE.Shape();
+    s.moveTo(-w / 2, 0);
+    s.lineTo(w / 2, 0);
+    s.lineTo(w / 2, h - w / 2);
+    s.absarc(0, h - w / 2, w / 2, 0, Math.PI, false);
+    s.lineTo(-w / 2, 0);
+    return new THREE.ShapeGeometry(s, 48);
+  };
+  mesh(arch(0.66, 1.06), LED.halo, 0, 1.0, 0.012, g, NOSHADOW);
+  mesh(arch(0.6, 1.0), M.mirror, 0, 1.03, 0.03, g, NOSHADOW);
+  box(0.58, 0.02, 0.025, M.walnut, 0, 1.0, 0.02, g); // shelf lip
+  lights.accent.push(rectLight(0.5, 0.05, V(2.85, 0.98, S - 0.03), V(0, -0.4, -1), V(1, 0, 0)));
+  // stool + styling
+  mesh(new THREE.CylinderGeometry(0.2, 0.18, 0.44, 40), M.boucle, 0, 0.22, 0.72, g);
+  mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.012, 32), M.brass, 0.25, 0.786, 0.2, g);
+  for (const [bx, bh, m] of [[0.2, 0.12, M.glass2], [0.29, 0.09, M.ceramic], [0.32, 0.14, M.brass]]) mesh(new THREE.CylinderGeometry(0.028, 0.028, bh, 20), m, bx, 0.79 + bh / 2, 0.2, g);
+  mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.16, 24), M.stoneware, -0.35, 0.86, 0.22, g);
+  const r1 = TX.rng(9);
+  for (let i = 0; i < 4; i++) {
+    const len = 0.25 + r1() * 0.2;
+    mesh(new THREE.CylinderGeometry(0.002, 0.003, len, 4), M.bark, -0.35, 0.94 + len / 2, 0.22, g, { cast: false }).rotation.set((r1() - 0.5) * 0.6, 0, (r1() - 0.5) * 0.6);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -725,7 +826,7 @@ composer.addPass(new OutputPass());
 // ---------------------------------------------------------------------------
 // Lighting state & scenes
 // ---------------------------------------------------------------------------
-const state = { scene: 'evening', cove: true, edge: true, down: true, pendant: true, accent: true, lamp: true, temp: 3000, bright: 1, color: null };
+const state = { scene: 'evening', curtain: true, cove: true, edge: true, down: true, pendant: true, accent: true, lamp: true, temp: 3000, bright: 1, color: null };
 const SCENES = {
   day: { hemi: 1.1, sun: 4.5, env: 0.35, exposure: 0.72, cove: 0.35, down: 0, pendant: 0, lamp: 0, accent: 0.3, edge: 0.35, sky: 'day', tv: 0, bloom: 0.25,
     toggles: { cove: true, edge: true, down: false, pendant: false, accent: true, lamp: false } },
@@ -815,9 +916,11 @@ function applyLighting() {
     l.intensity = 6 * accK;
   });
   LED.accent.color.copy(ledCol).multiplyScalar(state.accent ? 1 + 6 * accK : 0.1);
+  LED.halo.color.copy(ledCol).multiplyScalar(state.accent ? 0.6 + 1.6 * accK : 0.1);
 
   const lampK = state.lamp ? Math.max(s.lamp, day ? 0.5 : 0) : 0;
-  lampLights.forEach((l) => (l.intensity = 2.2 * lampK));
+  lampLights.forEach((l) => (l.intensity = (l.userData.k ?? 2.2) * lampK));
+  M.bedOpal.emissiveIntensity = state.lamp ? 0.05 + 0.45 * lampK : 0;
   LED.lamp.emissiveIntensity = state.lamp ? 0.1 + 0.7 * lampK : 0;
 
   M.screen.emissiveIntensity = s.tv * 0.9;
@@ -840,9 +943,12 @@ function setScene(name) {
 // ---------------------------------------------------------------------------
 const VIEWS = {
   living: { pos: V(2.9, 1.55, 0.3), target: V(-1.6, 1.5, -1.8) },
-  dining: { pos: V(-0.6, 1.6, -2.9), target: V(1.9, 1.2, 2.2) },
+  dining: { pos: V(-0.1, 1.6, 0.1), target: V(2.4, 0.9, -2.4) },
+  partition: { pos: V(0.2, 1.5, -2.2), target: V(1.8, 1.3, 0.76) },
+  bedroom: { pos: V(2.6, 1.6, 1.0), target: V(0.2, 0.9, 2.5) },
+  dressing: { pos: V(1.3, 1.45, 1.5), target: V(2.85, 1.15, 3.5) },
   ceiling: { pos: V(1.4, 1.0, 0.2), target: V(-1.6, 3.0, -1.6) },
-  dome: { pos: V(2.9, 1.05, -0.4), target: V(1.6, 3.1, 2.3) },
+  dome: { pos: V(2.6, 1.05, 1.0), target: V(1.4, 3.1, 2.3) },
   front: { pos: V(-0.45, 1.55, 3.25), target: V(-2.5, 1.2, 1.2) },
   plan: { pos: V(0, 13.5, 0.6), target: V(0, 0, 0) },
   section: { pos: V(0.3, 2.4, 8.6), target: V(0, 1.5, 0) },
@@ -951,6 +1057,8 @@ function frame() {
   }
   controls.update();
   updateCutaway();
+  curtainState.k += ((state.curtain ? 1 : 0) - curtainState.k) * Math.min(1, dt * 4);
+  curtain.scale.x = 0.12 + 0.88 * curtainState.k;
   composer.render();
   if (!still || stillFrames-- > 0) requestAnimationFrame(frame);
 }
