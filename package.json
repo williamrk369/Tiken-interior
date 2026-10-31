@@ -1,0 +1,16 @@
+{
+  "name": "tiken-interior",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiken Interior – living room concept with floating cove ceiling and perimeter LED lighting (interactive 3D)",
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --minify --format=iife --target=es2019 --outfile=dist/room.bundle.js",
+    "watch": "esbuild src/main.js --bundle --format=iife --outfile=dist/room.bundle.js --watch"
+  },
+  "dependencies": {
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}

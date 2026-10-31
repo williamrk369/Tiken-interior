@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tiken Interior · Living Room – Floating Cove Ceiling</title>
+<style>
+  :root {
+    --ink: #2b2723; --muted: #7a7065; --paper: rgba(250, 247, 241, 0.92);
+    --line: rgba(60, 50, 40, 0.14); --accent: #b5653e; --olive: #6b6e4e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #121110; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); }
+  #app { position: fixed; inset: 0; }
+  #app canvas { display: block; }
+
+  #loading { position: fixed; inset: 0; display: grid; place-items: center; color: #e9dfcf; letter-spacing: .3em; font-size: 12px; text-transform: uppercase; transition: opacity .6s; pointer-events: none; }
+  body.ready #loading { opacity: 0; }
+
+  .panel { position: fixed; top: 16px; left: 16px; bottom: 16px; width: 330px; background: var(--paper); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.35); overflow-y: auto; padding: 22px 22px 18px; transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s; }
+  body.panel-hidden .panel { transform: translateX(calc(-100% - 30px)); opacity: 0; }
+  .brand { font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 25px; line-height: 1.15; margin: 8px 0 6px; }
+  .lede { font-size: 12.5px; line-height: 1.55; color: var(--muted); margin: 0 0 14px; }
+  h2 { font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); margin: 18px 0 9px; font-weight: 700; }
+
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .seg.views { grid-template-columns: repeat(2, 1fr); }
+  button { font: inherit; cursor: pointer; }
+  .seg button { border: 1px solid var(--line); background: #fff; border-radius: 10px; padding: 9px 6px; font-size: 12px; color: var(--ink); transition: all .2s; }
+  .seg button:hover { border-color: var(--accent); }
+  .seg button.active { background: var(--ink); color: #f6f1e8; border-color: var(--ink); }
+
+  .toggles { display: grid; gap: 2px; }
+  .tog { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .tog small { display: block; color: var(--muted); font-size: 11px; margin-top: 1px; }
+  .switch { position: relative; width: 38px; height: 22px; flex: none; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch span { position: absolute; inset: 0; background: #cfc6b8; border-radius: 22px; transition: .25s; }
+  .switch span::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .25s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+  .switch input:checked + span { background: var(--accent); }
+  .switch input:checked + span::before { transform: translateX(16px); }
+
+  .slider { margin: 10px 0 4px; font-size: 12.5px; }
+  .slider .row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .slider .row b { font-weight: 600; }
+  input[type=range] { width: 100%; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 6px; outline: none; }
+  #temp { background: linear-gradient(90deg, #ff9f46, #ffd8a8, #fff4ea, #dbe7ff, #b9d1ff); }
+  #bright { background: linear-gradient(90deg, #3a342d, #fff1d8); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); }
+
+  .swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .swatches button { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--line); position: relative; }
+  .swatches button.active { box-shadow: 0 0 0 2px var(--ink); }
+  .swatches button:hover::after { content: attr(title); position: absolute; top: 34px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 10px; background: var(--ink); color: #fff; padding: 2px 6px; border-radius: 4px; z-index: 2; }
+
+  details { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 4px; }
+  summary { cursor: pointer; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 10px 0; list-style: none; }
+  summary::after { content: "+"; float: right; font-size: 14px; }
+  details[open] summary::after { content: "–"; }
+  .notes { font-size: 12px; line-height: 1.55; color: #4a433c; }
+  .notes ul { padding-left: 16px; margin: 6px 0 10px; }
+  .notes li { margin-bottom: 4px; }
+  .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0 4px; }
+  .palette div { font-size: 9.5px; color: var(--muted); text-align: center; line-height: 1.3; }
+  .palette i { display: block; height: 34px; border-radius: 8px; margin-bottom: 4px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  svg.section { width: 100%; height: auto; background: #fff; border-radius: 10px; border: 1px solid var(--line); margin: 6px 0; }
+
+  .fab { position: fixed; top: 16px; right: 16px; display: flex; gap: 8px; }
+  .fab button { background: rgba(250,247,241,.9); border: 0; border-radius: 999px; padding: 10px 14px; font-size: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.3); color: var(--ink); }
+  .hint { position: fixed; right: 18px; bottom: 16px; font-size: 11px; color: rgba(240,232,220,.75); letter-spacing: .05em; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+
+  @media (max-width: 720px) {
+    .panel { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; max-height: 52vh; border-radius: 16px; }
+    body.panel-hidden .panel { transform: translateY(calc(100% + 30px)); }
+    .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="loading">Tiken Interior · loading room</div>
+
+<aside class="panel">
+  <div class="brand">Tiken Interior</div>
+  <h1>Living Room — Floating Cove Ceiling</h1>
+  <p class="lede">A warm-minimal living room built around the ceiling: a dropped gypsum band frames a raised centre field, washed by a hidden LED cove, while a 60&nbsp;mm shadow-gap light traces every edge of the room.</p>
+
+  <h2>Lighting scene</h2>
+  <div class="seg">
+    <button data-scene="day">Day</button>
+    <button data-scene="evening">Evening</button>
+    <button data-scene="cinema">Cinema</button>
+  </div>
+
+  <h2>Circuits</h2>
+  <div class="toggles">
+    <label class="tog"><span>Ceiling cove LED<small>Indirect wash on the raised field</small></span><span class="switch"><input type="checkbox" data-toggle="cove"><span></span></span></label>
+    <label class="tog"><span>Perimeter edge light<small>Shadow-gap LED around all walls</small></span><span class="switch"><input type="checkbox" data-toggle="edge"><span></span></span></label>
+    <label class="tog"><span>Recessed downlights<small>8 × 7 W, 2700 K, CRI 95</small></span><span class="switch"><input type="checkbox" data-toggle="down"><span></span></span></label>
+    <label class="tog"><span>Ring pendant<small>Twin brass halos over the table</small></span><span class="switch"><input type="checkbox" data-toggle="pendant"><span></span></span></label>
+    <label class="tog"><span>Accent LEDs<small>Fluted wall reveals + console glow</small></span><span class="switch"><input type="checkbox" data-toggle="accent"><span></span></span></label>
+    <label class="tog"><span>Floor lamp<small>Linen drum, reading corner</small></span><span class="switch"><input type="checkbox" data-toggle="lamp"><span></span></span></label>
+  </div>
+
+  <h2>Cove &amp; edge LED colour</h2>
+  <div class="slider">
+    <div class="row"><span>Colour temperature</span><b id="tempVal">3000 K</b></div>
+    <input id="temp" type="range" min="2200" max="6500" step="100" value="3000">
+  </div>
+  <div class="slider">
+    <div class="row"><span>Brightness</span><b id="brightVal">100 %</b></div>
+    <input id="bright" type="range" min="5" max="150" step="1" value="100">
+  </div>
+  <div class="swatches">
+    <button data-color="k2700" title="Warm 2700 K" style="background:#ffc58a"></button>
+    <button data-color="k3000" title="Soft 3000 K" style="background:#ffd3a3"></button>
+    <button data-color="k4000" title="Neutral 4000 K" style="background:#ffe9d6"></button>
+    <button data-color="k6000" title="Cool 6000 K" style="background:#f2f2ff"></button>
+    <button data-color="#ff9a4d" title="Amber glow" style="background:#ff9a4d"></button>
+    <button data-color="#ff7f8f" title="Rose" style="background:#ff7f8f"></button>
+    <button data-color="#a78bff" title="Lavender" style="background:#a78bff"></button>
+    <button data-color="#4fc3d9" title="Ocean" style="background:#4fc3d9"></button>
+  </div>
+
+  <h2>Views</h2>
+  <div class="seg views">
+    <button data-view="living">Living view</button>
+    <button data-view="ceiling">Ceiling detail</button>
+    <button data-view="tvwall">TV wall</button>
+    <button data-view="nook">Reading nook</button>
+    <button data-view="section" style="grid-column: span 2">Cut-away section (shows ceiling profile)</button>
+  </div>
+
+  <details open>
+    <summary>Ceiling specification</summary>
+    <div class="notes">
+      <svg class="section" viewBox="0 0 320 170" aria-label="Ceiling cove section">
+        <defs>
+          <linearGradient id="glow" x1="0" y1="1" x2="0.6" y2="0"><stop offset="0" stop-color="#ffb866" stop-opacity=".9"/><stop offset="1" stop-color="#ffb866" stop-opacity="0"/></linearGradient>
+          <linearGradient id="wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb866" stop-opacity=".8"/><stop offset="1" stop-color="#ffb866" stop-opacity="0"/></linearGradient>
+        </defs>
+        <!-- slab -->
+        <rect x="0" y="10" width="320" height="14" fill="#cfc8bc"/>
+        <text x="200" y="20" font-size="8" fill="#5a5148">STRUCTURAL SLAB · 3000</text>
+        <!-- wall -->
+        <rect x="0" y="24" width="16" height="146" fill="#d9d0c2"/>
+        <!-- light wash on wall -->
+        <polygon points="16,92 30,92 16,165" fill="url(#wash)"/>
+        <!-- glow cove -->
+        <polygon points="175,72 320,24 175,24" fill="url(#glow)"/>
+        <!-- band -->
+        <rect x="24" y="72" width="152" height="20" fill="#f1ede6" stroke="#5a5148" stroke-width="1"/>
+        <rect x="174" y="58" width="3" height="16" fill="#f1ede6" stroke="#5a5148" stroke-width="1"/>
+        <!-- hangers -->
+        <line x1="60" y1="24" x2="60" y2="72" stroke="#8a8075" stroke-dasharray="3 2"/>
+        <line x1="130" y1="24" x2="130" y2="72" stroke="#8a8075" stroke-dasharray="3 2"/>
+        <!-- LED cove -->
+        <rect x="160" y="68" width="8" height="4" fill="#ff9d3b"/>
+        <!-- edge LED -->
+        <rect x="16" y="72" width="8" height="3" fill="#ff9d3b"/>
+        <!-- dims -->
+        <line x1="16" y1="110" x2="176" y2="110" stroke="#b5653e"/>
+        <text x="70" y="122" font-size="8" fill="#b5653e">BAND 700</text>
+        <text x="186" y="88" font-size="8" fill="#5a5148">FINISHED CEILING 2700</text>
+        <text x="186" y="66" font-size="8" fill="#5a5148">COVE LED (setback 60)</text>
+        <text x="26" y="104" font-size="8" fill="#5a5148">60 SHADOW GAP + LED</text>
+        <text x="186" y="44" font-size="8" fill="#5a5148">RAISED FIELD +300</text>
+      </svg>
+      <ul>
+        <li><b>Floating band:</b> 2 × 12.5&nbsp;mm gypsum on metal furring, 700&nbsp;mm wide, underside at 2700&nbsp;mm; centre field left at slab height (≈3000&nbsp;mm) for a 300&nbsp;mm step.</li>
+        <li><b>Cove light:</b> 24&nbsp;V COB LED tape, 14&nbsp;W/m, 3000&nbsp;K tunable white (2200–6500&nbsp;K), in an aluminium channel 60&nbsp;mm behind a 70&nbsp;mm upstand – no visible dots.</li>
+        <li><b>Edge light:</b> 60&nbsp;mm shadow-gap profile with opal diffuser on all four walls; grazes the walls and the fluted walnut panel. Doubles as the hidden curtain track.</li>
+        <li><b>Downlights:</b> 8 × trimless 7&nbsp;W, 36° (22° grazing the TV wall), 2700&nbsp;K, CRI&nbsp;95, UGR&nbsp;&lt;&nbsp;16.</li>
+        <li><b>Control:</b> 5 dimmable circuits (DALI-2 / Casambi) with Day · Evening · Cinema scenes.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary>Palette &amp; materials</summary>
+    <div class="notes">
+      <div class="palette">
+        <div><i style="background:#ebe4d8"></i>Walls<br>warm limewash</div>
+        <div><i style="background:#f7f5f0"></i>Ceiling<br>soft white</div>
+        <div><i style="background:#6a4630"></i>Walnut<br>fluted + joinery</div>
+        <div><i style="background:#c9a77c"></i>Oak floor<br>200 mm planks</div>
+        <div><i style="background:#e6dccb"></i>Bouclé<br>sofa</div>
+        <div><i style="background:#d9cab1"></i>Travertine<br>honed</div>
+        <div><i style="background:#b5653e"></i>Terracotta<br>accents</div>
+        <div><i style="background:#6b6e4e"></i>Olive<br>accents</div>
+      </div>
+      <ul>
+        <li>Room 6.0 × 5.0&nbsp;m. TV wall: full-height fluted walnut (2.8&nbsp;m) with LED reveals, floating media console, 65" TV at 1.36&nbsp;m centre.</li>
+        <li>L-shaped bouclé sofa facing the TV, travertine drum table + nested walnut table on a 3.2 × 2.4&nbsp;m wool rug.</li>
+        <li>Reading nook at the window: cognac leather lounge chair &amp; ottoman, olive tree, linen drapes on the concealed track.</li>
+        <li>Art wall: low walnut credenza with framed abstract, lit by an adjustable downlight.</li>
+      </ul>
+    </div>
+  </details>
+</aside>
+
+<div class="fab">
+  <button id="shot" title="Save a PNG of the current view">Save image</button>
+  <button id="panelToggle" title="Show / hide panel">Panel</button>
+</div>
+<div class="hint">Drag to orbit · Scroll to zoom · Right-drag to pan</div>
+
+<script src="dist/room.bundle.js"></script>
+</body>
+</html>
