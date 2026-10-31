@@ -265,3 +265,26 @@ export function skyView(mode) {
   ctx.fill();
   return toTexture(c);
 }
+
+// Cement breeze-block ventilation panel (as installed above the windows).
+export function breezeBlock() {
+  const [c, ctx] = canvas(512, 128);
+  ctx.fillStyle = '#d8d0c3';
+  ctx.fillRect(0, 0, c.width, c.height);
+  const cell = 64;
+  for (let x = 0; x < c.width; x += cell) {
+    for (let y = 0; y < c.height; y += cell) {
+      ctx.fillStyle = '#2a2622';
+      ctx.beginPath();
+      ctx.ellipse(x + cell / 2, y + cell / 2, cell * 0.3, cell * 0.3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#d8d0c3';
+      ctx.fillRect(x + cell / 2 - 3, y + 6, 6, cell - 12);
+      ctx.fillRect(x + 6, y + cell / 2 - 3, cell - 12, 6);
+      ctx.strokeStyle = 'rgba(120,110,95,0.6)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x + 1.5, y + 1.5, cell - 3, cell - 3);
+    }
+  }
+  return toTexture(c);
+}
