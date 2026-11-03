@@ -2,15 +2,16 @@
 /* Render a Reel Studio project to an Instagram-ready MP4, frame by frame.
  *
  *   node reels/tools/render.js --project reel.json --out reel.mp4 [--voice voice.wav] [--fps 30]
- *                              [--sfx 0.8] [--voice-gain 1]
+ *                              [--aroll aroll.mp4] [--sfx 0.8] [--voice-gain 1]
  *
  * Unlike "Record video" in the browser (real time), this renders every frame
  * exactly, renders the sound effects + music bed offline, mixes them under the
  * voice-over (ducked while the voice speaks) and encodes H.264 + AAC with
  * ffmpeg. Needs Node, ffmpeg and Playwright's Chromium.
  *
- * Note: uploaded media is not available here, so A-roll/B-roll show the
- * placeholders. Use it for motion-graphics / voice-over reels.
+ * --aroll: a talking-head video (e.g. from tools/aroll.py). Its frames are
+ * fed in one by one for scenes with bg "aroll", and its sound is used as the
+ * voice unless --voice is given. B-roll uploads are not available here.
  */
 const path = require('path');
 const fs = require('fs');
@@ -53,6 +54,15 @@ const page = 'file://' + path.resolve(__dirname, '..', 'index.html');
 
   // 1. sound effects + music bed, rendered offline in the page
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'reel-'));
+  let arollFrames = 0;
+  if (args.aroll) {
+    fs.mkdirSync(path.join(tmp, 'a'));
+    await new Promise((res, rej) => spawn('ffmpeg', ['-v', 'error', '-i', args.aroll, '-vf', `fps=${fps},scale=1080:1920`, '-q:v', '3', path.join(tmp, 'a', '%05d.jpg')], { stdio: 'inherit' })
+      .on('close', (c) => (c ? rej(new Error('frame extraction failed')) : res())));
+    arollFrames = fs.readdirSync(path.join(tmp, 'a')).length;
+    if (!args.voice) args.voice = args.aroll;
+    console.log(`a-roll: ${arollFrames} frames`);
+  }
   const sfxWav = path.join(tmp, 'sfx.wav');
   const b64 = await tab.evaluate(async () => {
     const buf = await window.__reel.renderAudio(48000);
@@ -85,7 +95,18 @@ const page = 'file://' + path.resolve(__dirname, '..', 'index.html');
   const frames = Math.ceil(duration * fps);
   const t0 = Date.now();
   for (let i = 0; i < frames; i++) {
-    const url = await tab.evaluate((t) => { window.__reel.renderAt(t); return document.getElementById('reel').toDataURL('image/jpeg', 0.93); }, i / fps);
+    let frame = null;
+    if (arollFrames) {
+      const off = (project.aroll && project.aroll.offset) || 0;
+      const k = Math.min(arollFrames, Math.max(1, Math.round((i / fps + off) * fps) + 1));
+      frame = 'data:image/jpeg;base64,' + fs.readFileSync(path.join(tmp, 'a', String(k).padStart(5, '0') + '.jpg')).toString('base64');
+    }
+    const url = await tab.evaluate(async ([t, f]) => {
+      const r = window.__reel;
+      if (f) { const img = new Image(); img.src = f; await img.decode(); r.arollFrame = img; }
+      r.renderAt(t);
+      return document.getElementById('reel').toDataURL('image/jpeg', 0.93);
+    }, [i / fps, frame]);
     if (!ff.stdin.write(Buffer.from(url.slice(url.indexOf(',') + 1), 'base64'))) await new Promise((r) => ff.stdin.once('drain', r));
     if (i % fps === 0) process.stdout.write(`\r  frame ${i}/${frames}  (${((Date.now() - t0) / 1000).toFixed(0)} s)`);
   }

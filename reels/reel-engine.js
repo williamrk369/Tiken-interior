@@ -1020,7 +1020,7 @@
 
     // ---------------------------------------------------------- media
     mediaSource(ref) {
-      if (ref === 'aroll') return this.arollEl && this.arollEl.readyState >= 2 ? this.arollEl : null;
+      if (ref === 'aroll') return this.arollFrame || (this.arollEl && this.arollEl.readyState >= 2 ? this.arollEl : null);
       const m = this.media[ref];
       if (!m) return null;
       if (m.isVideo) return m.el.readyState >= 2 ? m.el : null;
@@ -1061,7 +1061,7 @@
         ctx.save();
         const dim = sc.dim ? easeOut(prog(lt, sc.dimAt ?? 0.4, 0.5)) * sc.dim : 0;
         if (hasFilter && dim > 0) ctx.filter = `blur(${(dim * 14).toFixed(1)}px) brightness(${1 - dim * 0.45})`;
-        this.drawMedia(ctx, ref, 0, 0, W, H, { scale: s, grade, focusY: sc.frame === 'tight' ? 0.38 : 0.5, panX: ref !== 'aroll' ? lerp(-20, 20, p) : 0, t: this.t, seed: 7 });
+        this.drawMedia(ctx, ref, 0, 0, W, H, { scale: s, grade, focusY: sc.focusY ?? (sc.frame === 'tight' ? 0.38 : 0.5), panX: ref !== 'aroll' ? lerp(-20, 20, p) : 0, t: this.t, seed: 7 });
         ctx.restore();
         if (!hasFilter && dim > 0) { ctx.fillStyle = `rgba(0,0,0,${dim * 0.45})`; ctx.fillRect(0, 0, W, H); }
         const g = ctx.createLinearGradient(0, 0, 0, H);
@@ -1194,7 +1194,7 @@
       }
       this.composeScene(i, lt);
       if (this.P.phone) this.wrapPhone(ctx, t); else ctx.drawImage(this.comp, 0, 0);
-      if (this.P.watermark !== false) this.drawWatermark(ctx, sc);
+      if (this.P.watermark !== false && this.handle()) this.drawWatermark(ctx, sc);
     }
 
     wrapPhone(ctx, t) {
@@ -1219,7 +1219,7 @@
       ctx.fillStyle = this.T.accent; ctx.fillRect(x + 30, y - 22, (w - 60) * clamp(t / total), 6);
       ctx.textAlign = 'left';
     }
-    handle() { return '@' + String(this.P.handle || 'yourhandle').replace(/^@/, ''); }
+    handle() { const h = String(this.P.handle ?? 'yourhandle').replace(/^@/, '').trim(); return h ? '@' + h : ''; }
     drawWatermark(ctx, sc) {
       const ph = !!this.P.phone, x = ph ? W - 330 : 60, y = ph ? 1830 : 150;
       const light = !ph && sc && !this.isDark(sc);
@@ -1275,10 +1275,15 @@
       ctx.restore();
       const hk = prog(lt, 1.35, 0.6);
       if (hk > 0) {
-        const h = this.handle();
+        const h = this.handle() || ' ';
         ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff'; ctx.font = `700 66px ${FONTS.sans}`;
         ctx.fillText(h.slice(0, Math.ceil(h.length * hk)), cx, 980);
-        if (E.tagline) { ctx.globalAlpha = easeOut(prog(lt, 1.8, 0.5)); ctx.font = `italic 500 46px ${FONTS.serif}`; ctx.fillStyle = T.accent; ctx.fillText(E.tagline, cx, 1062); }
+        if (E.tagline) {
+          const big = !h.trim();                // no handle: the tagline is the main line
+          ctx.globalAlpha = easeOut(prog(lt, big ? 1.35 : 1.8, 0.5));
+          ctx.font = `italic 500 ${big ? 76 : 46}px ${FONTS.serif}`; ctx.fillStyle = big ? '#fff' : T.accent;
+          ctx.fillText(E.tagline, cx, big ? 990 : 1062);
+        }
         ctx.restore();
       }
       if (E.keyword) {

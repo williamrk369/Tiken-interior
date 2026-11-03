@@ -111,6 +111,28 @@ Element types: `pills`, `ring`, `hexflow`, `checklist`, `graph`, `timeline`, `wa
 `photo`, `circleMask`, `route`, `circle`, `brackets`, `bullets`, `payment`, `comment`, `text`. The presets in
 `presets.js` use every one of them, so you can copy from there. Any text inside an element also accepts `*key*` markup.
 
+## Talking-head reels (from a command line)
+
+For A-roll shot in one setup (one or more clips of you talking to camera):
+
+```bash
+python3 reels/tools/aroll.py out/ clip1.mov clip2.mov ... [--handle @you] [--keyword WORD]
+node reels/tools/render.js --project out/project.json --aroll out/aroll.mp4 --out reel.mp4
+```
+
+`aroll.py` applies the style to the footage:
+- It cuts dead air: pauses longer than 0.4 s are removed, along with clicks at the start.
+- Every jump cut becomes a wide ↔ tight (1.35×) framing change, so it reads as a punch-in rather than a cut.
+- Long takes get an extra punch-in at a micro-pause, so the framing changes every 1–3.5 s.
+- Clips are joined with a zoom-through transition and a whoosh.
+- It applies a light grade and levels the voice.
+
+`render.js` then adds the slow push-in, the music ducked under the voice, the corner handle (when `--handle` is set)
+and the end card.
+
+To add word-by-word captions, give each scene in `project.json` a `caption` (`text` with `*key*` words, `at`,
+`rate`, or exact per-word `times`), then render again.
+
 ## Voice-over reels (from a command line)
 
 If you have voice clips (one line each) and no video, two tools turn them into a finished MP4. They need Node,
@@ -154,6 +176,7 @@ Recording happens in real time, so a 30-second reel takes 30 seconds. Keep the t
 | `reel-engine.js` | Renderer: captions, transitions, elements, end card, sound, recording |
 | `presets.js` | The five sample reels |
 | `tools/voiceover.py` | Voice clips → one trimmed, levelled voice track + per-line timing |
+| `tools/aroll.py` | Talking-head clips → tightened, graded A-roll with punch-in cuts + project |
 | `tools/render.js` | Project (+ voice) → frame-exact H.264/AAC MP4 |
 
 Fonts are Inter, Playfair Display and Anton from Google Fonts. Offline, the tool falls back to Helvetica/Arial,
