@@ -1,351 +1,372 @@
 {
  "captions": [
   {
-   "text": "If you've applied to *thousands* of jobs",
-   "start": 0.04,
-   "end": 2.13,
+   "text": "If you have applied to *thousands* of jobs",
+   "start": 0.05,
    "times": [
-    0.04,
-    0.28,
-    0.64,
-    1.07,
-    1.19,
-    1.64,
-    1.73
-   ]
+    0.05,
+    0.29,
+    0.46,
+    0.65,
+    1.08,
+    1.2,
+    1.65,
+    1.74
+   ],
+   "end": 2.14
   },
   {
    "text": "and *nobody* is calling you back,",
-   "start": 2.15,
-   "end": 4.41,
+   "start": 2.16,
    "times": [
-    2.15,
-    2.93,
-    3.28,
-    3.4,
-    3.68,
-    3.8
-   ]
+    2.16,
+    2.94,
+    3.29,
+    3.41,
+    3.69,
+    3.81
+   ],
+   "end": 4.42
   },
   {
-   "text": "it's not the *job market.*",
-   "start": 4.43,
-   "end": 5.9,
+   "text": "it's not the *job market,*",
+   "start": 4.44,
    "times": [
-    4.43,
-    4.68,
-    4.91,
-    5.01,
-    5.24
-   ]
+    4.44,
+    4.69,
+    4.92,
+    5.02,
+    5.25
+   ],
+   "end": 5.91
   },
   {
-   "text": "It's your *resume.*",
-   "start": 5.92,
-   "end": 7.39,
+   "text": "it's your *resume.*",
+   "start": 5.93,
    "times": [
-    5.92,
-    6.25,
-    6.54
-   ]
+    5.93,
+    6.26,
+    6.55
+   ],
+   "end": 7.4
   },
   {
-   "text": "So, fix *number 1:*",
-   "start": 7.41,
-   "end": 9.07,
+   "text": "So the fix *number 1*",
+   "start": 7.42,
    "times": [
-    7.41,
-    7.63,
-    7.99,
-    8.31
-   ]
+    7.42,
+    7.55,
+    7.64,
+    8.0,
+    8.32
+   ],
+   "end": 8.53
   },
   {
-   "text": "use the *right words.*",
-   "start": 9.09,
-   "end": 11.2,
+   "text": "is use the *right word.*",
+   "start": 8.55,
    "times": [
-    9.09,
-    9.43,
-    9.52,
-    9.94
-   ]
+    8.55,
+    9.1,
+    9.44,
+    9.53,
+    9.95
+   ],
+   "end": 10.45
   },
   {
-   "text": "To do that,",
-   "start": 11.22,
-   "end": 12.3,
+   "text": "And in order to do that,",
+   "start": 10.47,
    "times": [
-    11.22,
-    11.31,
-    11.51
-   ]
+    10.47,
+    10.87,
+    11.0,
+    11.23,
+    11.32,
+    11.52
+   ],
+   "end": 11.79
   },
   {
-   "text": "pick out the *skills* they ask for.",
-   "start": 12.32,
-   "end": 13.62,
+   "text": "you have to pick out the *skill.*",
+   "start": 11.81,
    "times": [
-    12.32,
-    12.54,
-    12.72,
-    12.81,
-    12.9,
-    13.0,
-    13.1
-   ]
+    11.81,
+    11.92,
+    12.2,
+    12.33,
+    12.55,
+    12.73,
+    12.82
+   ],
+   "end": 13.63
   },
   {
-   "text": "If the job says *\"data analysis\"*",
-   "start": 13.64,
-   "end": 15.63,
+   "text": "If they use the word *data analysis*",
+   "start": 13.65,
    "times": [
-    13.64,
-    14.26,
-    14.38,
-    14.51,
-    14.63,
-    14.86
-   ]
+    13.65,
+    13.8,
+    13.95,
+    14.27,
+    14.36,
+    14.64,
+    14.87
+   ],
+   "end": 15.64
   },
   {
-   "text": "and your resume says",
-   "start": 15.65,
-   "end": 18.96,
+   "text": "and in your resume you, you write",
+   "start": 15.66,
    "times": [
-    15.65,
-    16.11,
-    16.3,
-    17.45
-   ]
+    15.66,
+    15.98,
+    16.12,
+    16.31,
+    16.69,
+    17.28,
+    18.13
+   ],
+   "end": 18.97
   },
   {
-   "text": "*\"good with numbers,\"*",
-   "start": 18.98,
-   "end": 20.38,
+   "text": "*good with numbers,*",
+   "start": 18.99,
    "times": [
-    18.98,
-    19.16,
-    19.33
-   ]
+    18.99,
+    19.17,
+    19.34
+   ],
+   "end": 20.07
   },
   {
-   "text": "your resume gets *rejected.*",
-   "start": 20.4,
-   "end": 22.12,
+   "text": "then your resume is *rejected.*",
+   "start": 20.09,
    "times": [
-    20.4,
-    20.59,
-    20.84,
-    21.09
-   ]
+    20.09,
+    20.41,
+    20.6,
+    20.9,
+    21.1
+   ],
+   "end": 21.76
   },
   {
-   "text": "Fix *number 2:*",
-   "start": 22.14,
-   "end": 23.42,
+   "text": "And the fix *number 2*",
+   "start": 21.78,
    "times": [
-    22.14,
-    22.44,
-    22.69
-   ]
+    21.78,
+    22.09,
+    22.15,
+    22.45,
+    22.7
+   ],
+   "end": 22.9
   },
   {
-   "text": "*add numbers.*",
-   "start": 23.44,
-   "end": 24.6,
+   "text": "is *add numbers.*",
+   "start": 22.92,
    "times": [
-    23.44,
-    23.7
-   ]
+    22.92,
+    23.45,
+    23.71
+   ],
+   "end": 24.61
   },
   {
-   "text": "Don't just say what you did.",
-   "start": 24.62,
-   "end": 26.86,
+   "text": "Don't just say what you did,",
+   "start": 24.63,
    "times": [
-    24.62,
-    25.02,
-    25.31,
-    25.49,
-    25.81,
-    25.93
-   ]
+    24.63,
+    25.03,
+    25.32,
+    25.5,
+    25.82,
+    25.94
+   ],
+   "end": 26.62
   },
   {
-   "text": "Add the *numbers*",
-   "start": 26.88,
-   "end": 27.42,
+   "text": "just add the *number*",
+   "start": 26.64,
    "times": [
-    26.88,
-    27.05,
-    27.11
-   ]
+    26.64,
+    26.89,
+    27.06,
+    27.12
+   ],
+   "end": 27.43
   },
   {
-   "text": "for what you *changed*",
-   "start": 27.44,
-   "end": 28.69,
+   "text": "of what you have *changed*",
+   "start": 27.45,
    "times": [
-    27.44,
-    27.56,
-    27.75,
-    28.16
-   ]
+    27.45,
+    27.57,
+    27.76,
+    27.85,
+    28.17
+   ],
+   "end": 28.7
   },
   {
-   "text": "because of you.",
-   "start": 28.71,
-   "end": 30.31,
+   "text": "because of you,",
+   "start": 28.72,
    "times": [
-    28.71,
-    29.19,
-    29.38
-   ]
+    28.72,
+    29.2,
+    29.39
+   ],
+   "end": 30.06
   },
   {
-   "text": "Recruiters will *stop scrolling*",
-   "start": 30.33,
-   "end": 32.79,
+   "text": "and recruiter would *stop scrolling*",
+   "start": 30.08,
    "times": [
-    30.33,
-    30.88,
-    31.44,
-    31.88
-   ]
+    30.08,
+    30.34,
+    30.73,
+    31.45,
+    31.89
+   ],
+   "end": 32.8
   },
   {
-   "text": "when you add this.",
-   "start": 32.81,
-   "end": 33.85,
+   "text": "if you add this",
+   "start": 32.82,
    "times": [
-    32.81,
-    32.93,
-    33.06,
-    33.36
-   ]
+    32.82,
+    32.94,
+    33.07,
+    33.37
+   ],
+   "end": 33.86
   },
   {
-   "text": "Fix 3: skip the *fancy template.*",
-   "start": 33.87,
-   "end": 36.57,
+   "text": "and skip the *fancy template,*",
+   "start": 33.88,
    "times": [
-    33.87,
-    34.02,
-    34.31,
-    35.0,
-    35.2,
-    35.75
-   ]
+    33.88,
+    34.32,
+    35.01,
+    35.21,
+    35.76
+   ],
+   "end": 36.58
   },
   {
-   "text": "Icons, tables and *2 columns*",
-   "start": 36.59,
-   "end": 38.63,
+   "text": "icon table, and *2-column*",
+   "start": 36.6,
    "times": [
-    36.59,
-    37.06,
-    37.86,
-    38.07,
-    38.29
-   ]
+    36.6,
+    37.07,
+    37.87,
+    38.21
+   ],
+   "end": 38.64
   },
   {
-   "text": "*confuse* recruiters.",
-   "start": 38.65,
-   "end": 40.01,
+   "text": "*confuses* the recruiters.",
+   "start": 38.66,
    "times": [
-    38.65,
-    39.49
-   ]
+    38.66,
+    39.38,
+    39.5
+   ],
+   "end": 40.02
   },
   {
-   "text": "Use just *1 column,*",
-   "start": 40.03,
-   "end": 42.29,
+   "text": "Just only *1 column*",
+   "start": 40.04,
    "times": [
-    40.03,
-    40.07,
-    40.46,
-    40.88
-   ]
+    40.04,
+    40.28,
+    40.47,
+    40.89
+   ],
+   "end": 41.61
   },
   {
-   "text": "*clear headings*",
-   "start": 42.31,
-   "end": 43.13,
+   "text": "and *clear heading*",
+   "start": 41.63,
    "times": [
-    42.31,
-    42.62
-   ]
+    41.63,
+    42.32,
+    42.63
+   ],
+   "end": 43.14
   },
   {
-   "text": "and a *normal font.*",
-   "start": 43.15,
-   "end": 46.41,
+   "text": "and *normal font.*",
+   "start": 43.16,
    "times": [
-    43.15,
-    43.55,
-    43.95,
-    44.36
-   ]
+    43.16,
+    43.96,
+    44.37
+   ],
+   "end": 44.96
   },
   {
-   "text": "Fix these *3 things*",
-   "start": 46.43,
-   "end": 47.88,
+   "text": "This thing so fix these *3 things*",
+   "start": 44.98,
    "times": [
-    46.43,
-    46.88,
-    47.31,
-    47.53
-   ]
+    44.98,
+    45.3,
+    46.15,
+    46.44,
+    46.89,
+    47.32,
+    47.54
+   ],
+   "end": 47.89
   },
   {
-   "text": "and watch your *calls go up.*",
-   "start": 47.9,
-   "end": 49.88,
+   "text": "and watch your *call goes up.*",
+   "start": 47.91,
    "times": [
-    47.9,
-    48.26,
-    48.62,
-    48.74,
-    49.11,
-    49.47
-   ]
+    47.91,
+    48.27,
+    48.63,
+    48.75,
+    49.07,
+    49.48
+   ],
+   "end": 49.89
   },
   {
    "text": "Comment *RESUME*",
-   "start": 49.9,
-   "end": 51.01,
+   "start": 49.91,
    "times": [
-    49.9,
-    50.27
-   ]
+    49.91,
+    50.28
+   ],
+   "end": 51.02
   },
   {
-   "text": "so you can see",
-   "start": 51.03,
-   "end": 52.55,
+   "text": "so that you can know",
+   "start": 51.04,
    "times": [
-    51.03,
-    51.38,
-    51.48,
-    51.91
-   ]
+    51.04,
+    51.2,
+    51.39,
+    51.49,
+    51.92
+   ],
+   "end": 52.56
   },
   {
-   "text": "the kind of resume I'll share.",
-   "start": 52.57,
-   "end": 55.0,
+   "text": "what kind of resume you will share.",
+   "start": 52.58,
    "times": [
-    52.57,
-    52.67,
-    52.92,
-    53.02,
-    53.76,
-    54.5
-   ]
+    52.58,
+    52.68,
+    52.93,
+    53.03,
+    54.22,
+    54.39,
+    54.51
+   ],
+   "end": 55.1
   }
  ],
  "cuts": [
