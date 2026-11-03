@@ -130,7 +130,22 @@ node reels/tools/render.js --project out/project.json --aroll out/aroll.mp4 --ou
 `render.js` then adds the slow push-in, the music ducked under the voice, the corner handle (when `--handle` is set)
 and the end card.
 
-To add word-by-word captions, give each scene in `project.json` a `caption` (`text` with `*key*` words, `at`,
+**Captions and word-timed graphics.** Write down what is said (`transcript.txt`), then time every word against
+the A-roll:
+
+```bash
+pip install pocketsphinx                       # includes its own English model
+python3 reels/tools/align.py out/aroll.mp4 transcript.txt out/words.json
+```
+
+Group the words into short caption lines and add them to the project as `captions`, each with `text` (`*key*`
+marks the styled word), `start`, `end` and per-word `times`. The captions run across cuts. Graphics that should land
+on a word go in `overlays`: each has `start`, `end`, optional `dim`, and `elements` such as `stat`, `xlist` (rows
+ticked ✓ or crossed out ✗), `stamp`, `doc`, `feed`, `graph`, `panel` or `comment`, with `at` measured from the
+overlay's start. `captionStyle: { "weight": 700, "key": "color", "stroke": 12 }` gives Inter Bold captions with a
+dark outline and the key word in the accent colour.
+
+Alternatively, give each scene in `project.json` a `caption` (`text` with `*key*` words, `at`,
 `rate`, or exact per-word `times`), then render again.
 
 ## Voice-over reels (from a command line)
@@ -177,6 +192,7 @@ Recording happens in real time, so a 30-second reel takes 30 seconds. Keep the t
 | `presets.js` | The five sample reels |
 | `tools/voiceover.py` | Voice clips → one trimmed, levelled voice track + per-line timing |
 | `tools/aroll.py` | Talking-head clips → tightened, graded A-roll with punch-in cuts + project |
+| `tools/align.py` | Transcript + A-roll → exact time of every word (offline) |
 | `tools/render.js` | Project (+ voice) → frame-exact H.264/AAC MP4 |
 
 Fonts are Inter, Playfair Display and Anton from Google Fonts. Offline, the tool falls back to Helvetica/Arial,
