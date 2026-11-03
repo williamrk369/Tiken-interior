@@ -301,7 +301,7 @@
       } else tl.set(el, { autoAlpha: 0 }, end + 0.45);       // the next panel covers it first
     } else {
       tl.fromTo(el, { autoAlpha: 0, scale: 1.1 }, { autoAlpha: 1, scale: 1, duration: 0.3, immediateRender: false }, start)
-        .set('.seam', { opacity: 0 }, start + 0.3)
+        .fromTo('.seam', { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, start)
         .fromTo(el, { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.22, immediateRender: false }, end - 0.22);
     }
     return el;
