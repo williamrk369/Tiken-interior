@@ -3,13 +3,13 @@
   const SVG = {
     check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     cross: '<svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg>',
-    brief: '<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5" fill="none" stroke="#2563eb" stroke-width="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18" fill="none" stroke="#2563eb" stroke-width="2.2"/></svg>',
-    search: '<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#2563eb" stroke-width="2.4"/><path d="M15 15l5 5" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round"/></svg>',
-    chart: '<svg viewBox="0 0 24 24"><path d="M5 19V13M10 19V9M15 19V11M20 19V5" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/></svg>',
-    layers: '<svg viewBox="0 0 24 24"><path d="M12 4l9 5-9 5-9-5z" fill="#2563eb"/><path d="M3 14l9 5 9-5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+    brief: '<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5" fill="none" stroke="#7aa2ff" stroke-width="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18" fill="none" stroke="#7aa2ff" stroke-width="2.2"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#7aa2ff" stroke-width="2.4"/><path d="M15 15l5 5" stroke="#7aa2ff" stroke-width="2.6" stroke-linecap="round"/></svg>',
+    chart: '<svg viewBox="0 0 24 24"><path d="M5 19V13M10 19V9M15 19V11M20 19V5" stroke="#7aa2ff" stroke-width="3" stroke-linecap="round"/></svg>',
+    layers: '<svg viewBox="0 0 24 24"><path d="M12 4l9 5-9 5-9-5z" fill="#7aa2ff"/><path d="M3 14l9 5 9-5" fill="none" stroke="#7aa2ff" stroke-width="2.2" stroke-linejoin="round"/></svg>',
     phone: '<svg viewBox="0 0 24 24"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v3a2 2 0 0 1-2 2A17 17 0 0 1 4 5a2 2 0 0 1 2-2z" fill="#fff"/></svg>',
     mail: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M3.5 7l8.5 6 8.5-6" fill="none" stroke="#fff" stroke-width="2.2"/></svg>',
-    pin: '<svg viewBox="0 0 24 24"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z" fill="#fff"/><circle cx="12" cy="10" r="2.2" fill="#2563eb"/></svg>',
+    pin: '<svg viewBox="0 0 24 24"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z" fill="#fff"/><circle cx="12" cy="10" r="2.2" fill="#7aa2ff"/></svg>',
   };
   const bars = (ws, cls = '') => ws.map((w) => `<div class="bar ${cls}" style="width:${w}%"></div>`).join('');
   const pill = (cls, icon, text, extra = '') => `<span class="pill ${cls} hid" ${extra}><span class="pi">${SVG[icon]}</span>${text}</span>`;
@@ -90,7 +90,7 @@
       <div class="req"><i></i>${bars([48])}</div><div class="req"><i></i>${bars([30])}</div>
       <div class="stamp hid" id="kw-stamp">REJECTED</div></div>
     <svg class="ch-l" id="kw-link" width="1080" height="1150"><path id="kw-path" d="" fill="none" stroke="#ef4444" stroke-width="7" stroke-linecap="round"/></svg>
-    <div class="ring hid" id="kw-ring" style="right:110px;top:596px"><svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="54" fill="none" stroke="#fde2e2" stroke-width="14"/></svg><b>0%</b><small>Keyword match</small></div>`);
+    <div class="ring hid" id="kw-ring" style="right:110px;top:596px"><svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="54" fill="none" stroke="#3b1416" stroke-width="14"/></svg><b>0%</b><small>Keyword match</small></div>`);
   const rowY = (row, doc) => doc.offsetTop + row.offsetTop + row.offsetHeight / 2;
   const y1 = rowY($('#kw-r1'), $('#kw-job')), y2 = rowY($('#kw-l1'), $('#kw-res'));
   $('#kw-path').setAttribute('d', `M 128 ${y1} C 18 ${y1 + 60}, 18 ${y2 - 60}, 128 ${y2}`);
@@ -101,12 +101,12 @@
   tl.fromTo('#kw-sweep', { autoAlpha: 0, y: 168 }, { autoAlpha: 1, y: 168, duration: 0.15, immediateRender: false }, tPick - 0.1)
     .fromTo('#kw-sweep', { y: 168 }, { y: 0, duration: tSkill - tPick + 0.05, ease: 'expo.inOut', immediateRender: false }, tPick);
   OM.sfx('whoosh', tPick, { gain: 0.35 }); OM.sfx('tick', tSkill, { gain: 0.45 });
-  tl.fromTo('#kw-r1', { backgroundColor: '#dcfce700' }, { backgroundColor: '#dcfce7', duration: 0.25, immediateRender: false }, tData)
+  tl.fromTo('#kw-r1', { backgroundColor: '#14532d00' }, { backgroundColor: '#14532d99', duration: 0.25, immediateRender: false }, tData)
     .fromTo('#kw-sweep', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.2, immediateRender: false }, tData);
   show('#kw-r1t', tData); OM.sfx('ding', tData + 0.05, { gain: 0.5 });
   show('#kw-res', tResume2 - 0.25, { y: 120, scale: 0.95 }, 0.45, 'expo.out'); OM.sfx('paper', tResume2, { gain: 0.55 });
   [[1, tGood], [2, tWith], [3, tNumbers]].forEach(([n, t]) => { tl.fromTo(`#kw-w${n}`, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.14, immediateRender: false }, t); OM.sfx('tick', t, { gain: 0.3 }); });
-  tl.fromTo('#kw-l1', { backgroundColor: '#fee2e200' }, { backgroundColor: '#fee2e2', duration: 0.25, immediateRender: false }, tNumbers + 0.3);
+  tl.fromTo('#kw-l1', { backgroundColor: '#7f1d1d00' }, { backgroundColor: '#7f1d1d99', duration: 0.25, immediateRender: false }, tNumbers + 0.3);
   show('#kw-l1x', tNumbers + 0.35); OM.sfx('pop', tNumbers + 0.4, { gain: 0.4, note: -3 });
   tl.fromTo('#kw-path', { strokeDashoffset: pathLen }, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.inOut', immediateRender: false }, tThen);
   OM.sfx('draw', tThen, { dur: 0.45, gain: 0.35 });
@@ -191,7 +191,7 @@
   show('#sp-ats', tConf); shake('#sp-fancy', tConf); OM.sfx('glitch', tConf, { gain: 0.45 });
   tl.fromTo(['#sp-fancy', '#sp-x', '#sp-ats'], { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.2, immediateRender: false }, tOne - 0.25);
   show('#sp-clean', tOne - 0.2, { scale: 0.94, y: 30 }, 0.35, 'expo.out'); show('#sp-c1', tOne); OM.sfx('ding', tOne, { gain: 0.5, note: 1 });
-  tl.fromTo('#sp-clean .hd', { color: '#0f1115', borderBottomColor: '#e5e9f0' }, { color: '#2563eb', borderBottomColor: '#2563eb', duration: 0.3, stagger: 0.08, immediateRender: false }, tClear);
+  tl.fromTo('#sp-clean .hd', { color: '#f3f5f9', borderBottomColor: '#ffffff1a' }, { color: '#7aa2ff', borderBottomColor: '#4f8bff', duration: 0.3, stagger: 0.08, immediateRender: false }, tClear);
   show('#sp-c2', tClear); OM.sfx('ding', tClear, { gain: 0.5, note: 3 });
   show('#sp-c3', tNormal); OM.sfx('ding', tNormal, { gain: 0.5, note: 5 });
 
