@@ -238,6 +238,19 @@
       for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
       return this.ctx;
     }
+    // use an OfflineAudioContext (for rendering the sound to a file)
+    attach(ctx) {
+      this.ctx = ctx;
+      this.master = ctx.createGain();
+      this.master.connect(ctx.destination);
+      const n = ctx.sampleRate * 2;
+      this.noise = ctx.createBuffer(1, n, ctx.sampleRate);
+      const d = this.noise.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      this.bus = ctx.createGain();
+      this.bus.connect(this.master);
+      return this;
+    }
     start() {
       if (!this.ensure()) return false;
       this.stop();
@@ -925,7 +938,7 @@
         if (w.key) { const f = keyFont(style, size); w.font = f.font; w.size = f.size; if (f.upper) w.text = w.text.toUpperCase(); }
         else { w.font = `${cap.weight || 600} ${size}px ${FONTS.sans}`; w.size = size; }
         ctx.font = w.font; w.w = ctx.measureText(w.text).width;
-        w.appear = (cap.at ?? 0.2) + i * rate;
+        w.appear = cap.times && cap.times[i] != null ? cap.times[i] : (cap.at ?? 0.2) + i * rate;
       });
       words.forEach((w, i) => {
         // keep a key phrase on one line: measure it from its first word
@@ -1293,18 +1306,36 @@
       if (!this.sfx.start()) return;
       const from = this.t, at0 = this.sfx.ctx.currentTime + 0.04 - from;
       this.clock0 = { audio: this.sfx.ctx.currentTime, t: from };
+      this.scheduleAudio(this.sfx, from, at0, !!this.musicEl);
+    }
+    scheduleAudio(sfx, from, at0, hasMusic) {
       const music = this.P.music ?? 'pad';
-      if (music === 'pad' && !this.musicEl) this.sfx.pad(at0 + from, from, this.duration);
+      if (music === 'pad' && !hasMusic) sfx.pad(at0 + from, from, this.duration);
       for (const [t, kind, a, b] of this.sfxEvents) {
         if (t < from - 0.01) continue;
-        const when = at0 + t;
-        if (kind === 'whoosh') this.sfx.whoosh(when, a, b !== false);
-        else if (kind === 'pop') this.sfx.pop(when, a);
-        else if (kind === 'tick') this.sfx.tick(when);
-        else if (kind === 'click') this.sfx.click(when);
-        else if (kind === 'riser') this.sfx.riser(when, a);
-        else if (kind === 'chime') this.sfx.chime(when);
+        const when = Math.max(0, at0 + t);
+        if (kind === 'whoosh') sfx.whoosh(when, a, b !== false);
+        else if (kind === 'pop') sfx.pop(when, a);
+        else if (kind === 'tick') sfx.tick(when);
+        else if (kind === 'click') sfx.click(when);
+        else if (kind === 'riser') sfx.riser(when, a);
+        else if (kind === 'chime') sfx.chime(when);
       }
+    }
+    // render the sound effects + music bed offline → 16-bit stereo WAV (ArrayBuffer)
+    async renderAudio(sampleRate = 48000) {
+      const OAC = global.OfflineAudioContext || global.webkitOfflineAudioContext;
+      const oc = new OAC(2, Math.ceil((this.duration + 0.5) * sampleRate), sampleRate);
+      this.scheduleAudio(new Sfx().attach(oc), 0, 0, false);
+      const buf = await oc.startRendering();
+      const n = buf.length, ch = [buf.getChannelData(0), buf.getChannelData(1)];
+      const out = new DataView(new ArrayBuffer(44 + n * 4));
+      const str = (o, v) => { for (let i = 0; i < v.length; i++) out.setUint8(o + i, v.charCodeAt(i)); };
+      str(0, 'RIFF'); out.setUint32(4, 36 + n * 4, true); str(8, 'WAVEfmt '); out.setUint32(16, 16, true);
+      out.setUint16(20, 1, true); out.setUint16(22, 2, true); out.setUint32(24, sampleRate, true); out.setUint32(28, sampleRate * 4, true);
+      out.setUint16(32, 4, true); out.setUint16(34, 16, true); str(36, 'data'); out.setUint32(40, n * 4, true);
+      for (let i = 0, o = 44; i < n; i++) for (let c = 0; c < 2; c++, o += 2) out.setInt16(o, Math.max(-1, Math.min(1, ch[c][i])) * 32767, true);
+      return out.buffer;
     }
     syncMedia(force) {
       const sync = (el, target) => {
@@ -1402,6 +1433,16 @@
       else if (sc.bg === 'aroll' || typeof sc.bg === 'object') sc.caption.y = 1250;
       if (sc.bg === 'aroll') { sc.punch = /\*/.test(cap) || undefined; if (i % 3 === 2) sc.frame = sc.frame || 'tight'; }
       sc.dur = +Math.max(2.2, t + extra + 0.5).toFixed(2);
+      // voice-over: the scene lasts as long as its clip, words spread over the speech
+      const vt = o.timing && o.timing[i];
+      if (vt) {
+        sc.dur = +vt.dur.toFixed(2);
+        sc.caption.at = +vt.speech[0].toFixed(2);
+        sc.caption.rate = +(((vt.speech[1] - vt.speech[0]) * 0.85) / Math.max(1, nWords)).toFixed(3);
+        const after = sc.caption.at + nWords * sc.caption.rate;
+        for (const e of sc.elements) if (e.at != null) e.at = +Math.min(e.at, after).toFixed(2);
+        if (sc.elements.some((e) => e.type === 'waveform')) sc.elements.filter((e) => e.type === 'waveform').forEach((e) => e.words.forEach((w, j) => { w.at = +(sc.caption.at + j * Math.max(0.5, (vt.speech[1] - vt.speech[0]) / e.words.length)).toFixed(2); }));
+      }
       const bgKey = typeof sc.bg === 'object' ? 'media' : sc.bg;
       sc.in = i === 0 ? null : (bgKey === 'aroll' && prevBg === 'aroll' ? null : cycle[ti++ % cycle.length]);
       prevBg = bgKey;

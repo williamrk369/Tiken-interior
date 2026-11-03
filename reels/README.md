@@ -111,6 +111,27 @@ Element types: `pills`, `ring`, `hexflow`, `checklist`, `graph`, `timeline`, `wa
 `photo`, `circleMask`, `route`, `circle`, `brackets`, `bullets`, `payment`, `comment`, `text`. The presets in
 `presets.js` use every one of them, so you can copy from there. Any text inside an element also accepts `*key*` markup.
 
+## Voice-over reels (from a command line)
+
+If you have voice clips (one line each) and no video, two tools turn them into a finished MP4. They need Node,
+ffmpeg and Playwright's Chromium.
+
+```bash
+# 1. trim each clip to its speech, join them in order, normalise loudness
+python3 reels/tools/voiceover.py out/ clip1.m4a clip2.m4a clip3.m4a ...
+#    → out/voice.wav and out/timing.json (scene start, length and speech span per clip)
+
+# 2. write the script: one line per clip, in the same order, with *key words* and | visuals
+#    then build a project whose scenes last exactly as long as each clip
+#    (ReelStudio.buildFromScript(lines, { timing }) does this), and render it:
+node reels/tools/render.js --project reel.json --voice out/voice.wav --out reel.mp4
+```
+
+`render.js` draws every frame exactly (not in real time) and renders the sound effects and music bed offline. It
+lowers them under your voice while you speak, then encodes H.264 + AAC at 30 fps, ready to upload. Captions run word
+by word across each line's speech. Each scene lasts as long as its clip, and transitions fall in the short pauses
+between lines.
+
 ## Recording
 
 **● Record video** plays the reel from the start and records the canvas together with the audio: sound effects, the
@@ -132,6 +153,8 @@ Recording happens in real time, so a 30-second reel takes 30 seconds. Keep the t
 | `index.html` | The studio: preview, controls, media upload, quick script, JSON editor |
 | `reel-engine.js` | Renderer: captions, transitions, elements, end card, sound, recording |
 | `presets.js` | The five sample reels |
+| `tools/voiceover.py` | Voice clips → one trimmed, levelled voice track + per-line timing |
+| `tools/render.js` | Project (+ voice) → frame-exact H.264/AAC MP4 |
 
 Fonts are Inter, Playfair Display and Anton from Google Fonts. Offline, the tool falls back to Helvetica/Arial,
 Georgia and Impact.
