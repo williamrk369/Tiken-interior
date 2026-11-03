@@ -821,6 +821,11 @@
     .fromTo('#endcard .kw', { opacity: 0, scale: 1.4, rotation: -4 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.6, ease: 'back.out(2)', immediateRender: false }, END + 0.4)
     .fromTo('#endcard .kw .blk', { scaleX: 0 }, { scaleX: 1, duration: 0.4, immediateRender: false }, END + 0.42)
     .fromTo('#endcard .line', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, immediateRender: false }, END + 0.9);
+  // the end card holds as a poster: a slow push, the keyword block breathing
+  const HOLD = Number(V.endHold) || 3.4;
+  tl.fromTo('#endcard .big, #endcard .line', { scale: 1 }, { scale: 1.06, duration: HOLD - 0.4, ease: 'none', immediateRender: false }, END + 0.4)
+    .fromTo('#endcard .kw .t', { scale: 1 }, { scale: 1.08, duration: HOLD - 1, ease: 'sine.inOut', immediateRender: false }, END + 1)
+    .fromTo('#endcard .kw .blk', { scaleY: 1 }, { scaleY: 1.12, duration: (HOLD - 1) / 2, ease: 'sine.inOut', yoyo: true, repeat: 1, immediateRender: false }, END + 1);
   OM.sfx('riser', END, { dur: 0.4, gain: 0.4 });
   OM.sfx('impact', END + 0.42, { gain: 0.6 });
   OM.sfx('chime', END + 0.95, { gain: 0.5 });
