@@ -153,7 +153,7 @@
       : `<div class="fc" style="height:${FH[i]}px"><div class="av"></div><div>${bars([40 + (i * 23) % 35], 'dark')}${bars([85 - (i * 17) % 30, 60 - (i * 11) % 25].slice(0, FH[i] > 215 ? 2 : 1))}</div></div>`).join('')}</div></div>
       <div class="hitring hid" id="fd-ring" style="top:450px"></div></div>`);
   tl.set('#panel-numbers', { autoAlpha: 0 }, tAnd5 + 0.3);
-  tl.fromTo('#fd', { y: 0, filter: 'blur(20px)' }, { y: 460 - HIT_Y, filter: 'blur(0px)', duration: tStop - tAnd5, ease: 'power3.out', immediateRender: false }, tAnd5);
+  tl.fromTo('#fd', { y: 0, filter: 'blur(20px)' }, { y: 460 - HIT_Y, filter: 'blur(0px)', duration: tStop - tAnd5, ease: 'power2.inOut', immediateRender: false }, tAnd5);
   OM.sfx('whoosh', tAnd5, { gain: 0.6 });
   show('#fd-ring', tStop, { scale: 1.12 }, 0.35, 'expo.out'); OM.sfx('thud', tStop, { gain: 0.65 });
   tl.fromTo('#fd-slot', { scale: 1 }, { scale: 1.25, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, tThis);
