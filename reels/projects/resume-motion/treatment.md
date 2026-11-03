@@ -32,3 +32,8 @@ Captions: word by word on the voice; the key phrase lands on a blue block (one u
 
 ## Stills to check
 hook 2.2 s · hero 20.5 s (keyword match) · densest 41.5 s (split + caption) · end 56.5 s
+
+## Grade (v8, from the user's reference still)
+Teal-and-orange: the ungraded cut (aroll.py --no-grade) is re-tagged BT.709, then neutrals/whites pushed to teal and
+darkened, skin (reds/yellows) pushed warm, warm midtones, soft S-curve with lifted blacks, vignette. Command in the
+build log; big background words are drawn after the grade (tools/depthtext.py) so their gold stays pure.
