@@ -401,7 +401,7 @@
   show('#nm-impact', tChanged); OM.sfx('ding', tChanged + 0.05, { gain: 0.5, note: 5 });
 
   // rows 19–20 · "and recruiter would stop scrolling" → the feed whips and stops on "stop"; "this" pulses the number
-  const N = 13, HIT = 10, FH = [196, 238, 212, 254, 188, 228, 246, 204, 232, 192, 200, 240, 214];
+  const N = 9, HIT = 6, FH = [196, 238, 212, 254, 188, 228, 200, 240, 214];
   const HIT_Y = FH.slice(0, HIT).reduce((a, h) => a + h + 26, 0);
   const tStop = W('stop') ?? 31.49, tThis = W('this') ?? 33.41, tSkip = W('skip') ?? 34.36;
   panel('panel-feed', tAnd5 - 0.05, tSkip - 0.5, 'full', `
