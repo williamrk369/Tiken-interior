@@ -1,0 +1,7 @@
+[
+ {"in": 1.20, "out": 2.15, "y": 470, "lines": [{"t": "thousands", "c": "gold"}]},
+ {"in": 2.94, "out": 4.36, "y": 470, "lines": [{"t": "nobody", "c": "white"}]},
+ {"in": 7.64, "out": 9.10, "y": 470, "lines": [{"t": "fix 01", "c": "gold", "at": 7.64}]},
+ {"in": 9.53, "out": 10.42, "y": 470, "lines": [{"t": "right word", "c": "gold", "at": 9.53}]},
+ {"in": 49.91, "out": 55.10, "y": 500, "lines": [{"t": "comment", "c": "white", "at": 49.91}, {"t": "resume", "c": "gold", "at": 50.28}]}
+]
