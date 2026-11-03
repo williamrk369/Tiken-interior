@@ -305,6 +305,37 @@
         o.connect(g).connect(this.bus); o.start(at + i * 0.07); o.stop(at + i * 0.07 + 1.5);
       });
     }
+    // lo-fi beat: kick, snare, hats and bass on top of the pad (bpm ~86)
+    beat(at, from, total, bpm = 86) {
+      const c = this.ctx, spb = 60 / bpm, roots = [65.41, 55, 43.65, 49];   // C · A · F · G
+      const barLen = spb * 4, bars = Math.ceil(total / barLen);
+      const hit = (t, fn) => { if (t >= from - 0.001 && t < total) fn(at + (t - from)); };
+      for (let b = 0; b < bars; b++) {
+        const bar0 = b * barLen, root = roots[Math.floor((b / bars) * 4) % 4];
+        for (let q = 0; q < 8; q++) {
+          const t = bar0 + q * spb / 2;
+          // hats on every 8th, slightly swung
+          hit(t + (q % 2 ? spb * 0.06 : 0), (w) => {
+            const f = c.createBiquadFilter(), g = c.createGain(); f.type = 'highpass'; f.frequency.value = 7000;
+            this.env(g, w, q % 2 ? 0.035 : 0.055, 0.002, 0.05); this.noiseSrc(w, 0.07).connect(f).connect(g).connect(this.bus);
+          });
+        }
+        [0, 2.5].forEach((beatPos) => hit(bar0 + beatPos * spb, (w) => {     // kick
+          const o = c.createOscillator(), g = c.createGain();
+          o.frequency.setValueAtTime(130, w); o.frequency.exponentialRampToValueAtTime(42, w + 0.12);
+          this.env(g, w, 0.55, 0.004, 0.28); o.connect(g).connect(this.bus); o.start(w); o.stop(w + 0.35);
+        }));
+        [1, 3].forEach((beatPos) => hit(bar0 + beatPos * spb, (w) => {       // soft snare
+          const f = c.createBiquadFilter(), g = c.createGain(); f.type = 'bandpass'; f.frequency.value = 1900; f.Q.value = 0.8;
+          this.env(g, w, 0.2, 0.003, 0.16); this.noiseSrc(w, 0.2).connect(f).connect(g).connect(this.bus);
+        }));
+        [0, 1.5, 2.5].forEach((beatPos, k) => hit(bar0 + beatPos * spb, (w) => { // bass
+          const o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter();
+          o.type = 'triangle'; o.frequency.value = k === 1 ? root * 1.5 : root; lp.type = 'lowpass'; lp.frequency.value = 400;
+          this.env(g, w, 0.22, 0.01, spb * 0.9); o.connect(lp).connect(g).connect(this.bus); o.start(w); o.stop(w + spb + 0.1);
+        }));
+      }
+    }
     // soft four-chord pad (Cmaj7 · Am7 · Fmaj7 · G6) under the whole reel
     pad(at, from, total) {
       const chords = [[130.81, 196, 246.94, 329.63], [110, 164.81, 196, 261.63], [87.31, 174.61, 220, 329.63], [98, 146.83, 196, 246.94]];
@@ -679,7 +710,7 @@
         const e = easeOut(k), w = el.w || 760, h = el.h || 900;
         ctx.save(); ctx.translate(el.x ?? W / 2, (el.y ?? 900) + (1 - e) * 120); ctx.rotate((el.tilt ?? -0.04) * e); ctx.globalAlpha = clamp(k * 2);
         shadow(ctx, 60, 24, 0.3); ctx.fillStyle = '#fff'; ctx.fillRect(-w / 2, -h / 2, w, h); noShadow(ctx);
-        R.drawMedia(ctx, el.media, -w / 2 + 24, -h / 2 + 24, w - 48, h - 48, { grade: el.grade, seed: 11 });
+        R.drawMedia(ctx, el.media, -w / 2 + 24, -h / 2 + 24, w - 48, h - 48, { grade: el.grade, seed: 11, focusY: el.focusY, t: lt });
         ctx.restore();
       },
       sfx: (el) => [[el.at ?? 0.2, 'whoosh', 0.4]],
@@ -691,7 +722,7 @@
         const T = R.T, k = prog(lt, el.at ?? 0.2, 0.6); if (k <= 0) return;
         const x = el.x ?? W / 2, y = el.y ?? 800, r = (el.r ?? 330) * backOut(k);
         ctx.save(); ctx.beginPath(); ctx.arc(x, y, Math.max(1, r), 0, Math.PI * 2); ctx.clip();
-        R.drawMedia(ctx, el.media ?? 'aroll', x - r * 1.25, y - r * 1.25, r * 2.5, r * 2.5, { grade: el.grade, seed: 5, t: lt, focusY: 0.42 });
+        R.drawMedia(ctx, el.media ?? 'aroll', x - r * 1.25, y - r * 1.25, r * 2.5, r * 2.5, { grade: el.grade, seed: 5, t: lt, focusY: el.focusY ?? 0.42 });
         ctx.restore();
         ctx.strokeStyle = T.accent; ctx.lineWidth = 8; ctx.beginPath(); ctx.arc(x, y, r + 14, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * easeOut(k)); ctx.stroke();
         for (let i = 0; i < 9; i++) {
@@ -1317,7 +1348,8 @@
     }
     scheduleAudio(sfx, from, at0, hasMusic) {
       const music = this.P.music ?? 'pad';
-      if (music === 'pad' && !hasMusic) sfx.pad(at0 + from, from, this.duration);
+      if ((music === 'pad' || music === 'lofi') && !hasMusic) sfx.pad(at0 + from, from, this.duration);
+      if (music === 'lofi' && !hasMusic) sfx.beat(at0 + from, from, this.duration - 2.5);
       for (const [t, kind, a, b] of this.sfxEvents) {
         if (t < from - 0.01) continue;
         const when = Math.max(0, at0 + t);

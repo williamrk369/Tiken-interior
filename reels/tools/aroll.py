@@ -113,6 +113,59 @@ def split_points(db, a, b):
     return split_points(db, a, best) + [best] + split_points(db, best, b)
 
 
+def add_graphics(scenes, shots):
+    """Content-neutral visual beats built from the A-roll itself:
+    • each new clip (a new point) opens with the shot as a tilted floating card
+      on white that then expands to full frame
+    • long clips get one circle-mask cutaway with sparkles near their middle
+    • the opening shot gets focus brackets"""
+    out = []
+    clip_len = {}
+    for s in shots:
+        clip_len[s['clip']] = clip_len.get(s['clip'], 0) + s['dur']
+    # pick one circle cutaway per long clip: the non-first shot nearest the clip's middle
+    circle_at = set()
+    for c, total in clip_len.items():
+        if total < 12:
+            continue
+        idx = [i for i, s in enumerate(shots) if s['clip'] == c]
+        t0 = shots[idx[0]]['start']
+        cands = [i for i in idx[1:] if 1.6 <= shots[i]['dur'] <= 3.6 and not shots[i - 1]['newClip']]
+        if cands:
+            circle_at.add(min(cands, key=lambda i: abs(shots[i]['start'] + shots[i]['dur'] / 2 - (t0 + total / 2))))
+    for i, (sc, s) in enumerate(zip(scenes, shots)):
+        if i == 0:
+            sc['elements'] = [{'type': 'brackets', 'x': 540, 'y': 640, 'w': 640, 'h': 720, 'at': 0.15, 'len': 70}]
+            sc['sfx'] = [[0.15, 'pop', 1.1]]
+        if s['newClip'] and i > 0:
+            short = sc['dur'] < 2.0          # short opening shot: the card is the whole shot
+            card = {'dur': sc['dur'] if short else 1.4, 'bg': 'white', 'in': 'zoom', 'focus': sc.get('focus'),
+                    'elements': [{'type': 'photo', 'media': 'aroll', 'at': 0.05, 'x': 540, 'y': 900, 'w': 800, 'h': 1220,
+                                  'tilt': -0.045 if len(out) % 2 else 0.045, 'focusY': 0.25, 'breathe': 0.05}],
+                    'sfx': [[0.05, 'pop', 0.9]]}
+            if short:
+                out.append(card)
+                if i + 1 < len(scenes):
+                    scenes[i + 1]['in'] = 'morph'
+                    scenes[i + 1].pop('sfx', None)
+                continue
+            rest = dict(sc, dur=round(sc['dur'] - 1.4, 3), **{'in': 'morph'})
+            rest.pop('focus', None)
+            out += [card, rest]
+            continue
+        if i in circle_at:
+            sc = {'dur': sc['dur'], 'bg': 'theme', 'in': 'morph',
+                  'elements': [{'type': 'circleMask', 'media': 'aroll', 'x': 540, 'y': 940, 'r': 380, 'at': 0.0, 'focusY': 0.22}],
+                  'sfx': [[0.05, 'whoosh', 0.5, True], [0.5, 'chime']]}
+            out.append(sc)
+            if i + 1 < len(scenes) and not shots[i + 1]['newClip']:
+                scenes[i + 1]['in'] = 'morph'
+                scenes[i + 1].pop('sfx', None)
+            continue
+        out.append(sc)
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('out')
@@ -122,6 +175,8 @@ def main():
     ap.add_argument('--theme', default='doc')
     ap.add_argument('--tagline', default='')
     ap.add_argument('--no-grade', action='store_true')
+    ap.add_argument('--music', default='lofi', help='lofi · pad · none')
+    ap.add_argument('--plain', action='store_true', help='no cards / circle cutaways, A-roll only')
     o = ap.parse_args()
     os.makedirs(o.out, exist_ok=True)
 
@@ -168,10 +223,12 @@ def main():
             sc['in'] = 'zoom'
             sc['focus'] = {'x': 540, 'y': 560}
         scenes.append(sc)
+    if not o.plain:
+        scenes = add_graphics(scenes, shots)
     end = {'flash': False, 'tagline': o.tagline or ('' if o.handle else 'Follow for more')}
     if o.keyword:
         end.update({'keyword': o.keyword, 'text': 'Comment'})
-    project = {'title': 'A-roll reel', 'theme': o.theme, 'captionStyle': {'weight': 700, 'key': 'color', 'size': 66}, 'handle': o.handle, 'music': 'pad',
+    project = {'title': 'A-roll reel', 'theme': o.theme, 'captionStyle': {'weight': 700, 'key': 'color', 'size': 66}, 'handle': o.handle, 'music': o.music,
                'watermark': bool(o.handle), 'aroll': {'offset': 0}, 'scenes': scenes, 'end': end}
     with open(os.path.join(o.out, 'shots.json'), 'w') as f:
         json.dump(shots, f, indent=1)
