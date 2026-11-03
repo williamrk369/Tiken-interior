@@ -89,7 +89,7 @@
   .feedwin { position: absolute; left: 110px; top: 250px; width: 860px; height: 1120px; overflow: visible; }
   .feedmask { position: absolute; inset: 0; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
   .feed { position: absolute; left: 0; top: 0; width: 100%; }
-  .fc { height: 200px; margin-bottom: 26px; border-radius: 26px; background: #ffffff17; display: flex; align-items: center; gap: 28px; padding: 0 34px; box-sizing: border-box; }
+  .fc { margin-bottom: 26px; border-radius: 26px; background: #ffffff17; display: flex; align-items: center; gap: 28px; padding: 0 34px; box-sizing: border-box; }
   .fc .av { width: 110px; height: 110px; background: #ffffff2e; }
   .fc > div:last-child { flex: 1; } .fc .bar { background: #ffffff38; }
   .fc.hit { background: #fff; color: var(--ink); } .fc.hit .bar { background: #dfe4ec; } .fc.hit .av { background: linear-gradient(135deg, #a9c3fb, #2563eb); }
@@ -390,15 +390,17 @@
   show('#nm-impact', tChanged + 0.05); OM.sfx('ding', tChanged + 0.1, { gain: 0.5, note: 5 });
 
   // 4 · "recruiters will stop scrolling": the feed whips past and stops on the resume with numbers
-  const N = 13, HIT = 10, STEP = 226;
+  // card heights vary so a fast scroll never strobes (identical cards a card-height apart per frame read as a jump)
+  const N = 13, HIT = 10, FH = [196, 238, 212, 254, 188, 228, 246, 204, 232, 192, 200, 240, 214];
+  const HIT_Y = FH.slice(0, HIT).reduce((a, h) => a + h + 26, 0);
   panel('panel-feed', 30.13, 33.7, 'full', `
     <div class="feedlbl">Recruiter's feed</div>
     <div class="feedwin"><div class="feedmask"><div class="feed" id="fd">${Array.from({ length: N }, (_, i) => i === HIT
-      ? `<div class="fc hit"><div class="av"></div><div>${bars([46], 'dark')}<div class="bt">Grew followers by <span class="slot">X%</span></div></div></div>`
-      : `<div class="fc"><div class="av"></div><div>${bars([40 + (i * 23) % 35], 'dark')}${bars([85 - (i * 17) % 30, 60 - (i * 11) % 25])}</div></div>`).join('')}</div></div>
+      ? `<div class="fc hit" style="height:200px"><div class="av"></div><div>${bars([46], 'dark')}<div class="bt">Grew followers by <span class="slot">X%</span></div></div></div>`
+      : `<div class="fc" style="height:${FH[i]}px"><div class="av"></div><div>${bars([40 + (i * 23) % 35], 'dark')}${bars([85 - (i * 17) % 30, 60 - (i * 11) % 25].slice(0, FH[i] > 215 ? 2 : 1))}</div></div>`).join('')}</div></div>
       <div class="hitring hid" id="fd-ring" style="top:${460 - 10}px"></div></div>`);
   const tStop = (W('scrolling') ?? 31.93) - 0.15;
-  tl.fromTo('#fd', { y: 0, filter: 'blur(12px)' }, { y: 460 - HIT * STEP, filter: 'blur(0px)', duration: tStop - 30.2, ease: 'power4.out', immediateRender: false }, 30.2);
+  tl.fromTo('#fd', { y: 0, filter: 'blur(20px)' }, { y: 460 - HIT_Y, filter: 'blur(0px)', duration: tStop - 30.15, ease: 'power3.out', immediateRender: false }, 30.15);
   OM.sfx('whoosh', 30.2, { gain: 0.6 });
   show('#fd-ring', tStop - 0.05, { scale: 1.15 }, 0.4, 'expo.out');
   OM.sfx('thud', tStop, { gain: 0.65 });
