@@ -162,6 +162,8 @@ def main():
     for i, s in enumerate(shots):
         tight = False if s['newClip'] else not tight
         sc = {'dur': s['dur'], 'bg': 'aroll', 'frame': 'tight' if tight else 'wide', 'focusY': 0.2}
+        if not s['newClip']:
+            sc['sfx'] = [[-0.06, 'whoosh', 0.22, tight]]   # soft swish on each punch-in / punch-out
         if s['newClip'] and i > 0:
             sc['in'] = 'zoom'
             sc['focus'] = {'x': 540, 'y': 560}
@@ -169,7 +171,7 @@ def main():
     end = {'flash': False, 'tagline': o.tagline or ('' if o.handle else 'Follow for more')}
     if o.keyword:
         end.update({'keyword': o.keyword, 'text': 'Comment'})
-    project = {'title': 'A-roll reel', 'theme': o.theme, 'handle': o.handle, 'music': 'pad',
+    project = {'title': 'A-roll reel', 'theme': o.theme, 'captionStyle': {'weight': 700, 'key': 'color', 'size': 66}, 'handle': o.handle, 'music': 'pad',
                'watermark': bool(o.handle), 'aroll': {'offset': 0}, 'scenes': scenes, 'end': end}
     with open(os.path.join(o.out, 'shots.json'), 'w') as f:
         json.dump(shots, f, indent=1)

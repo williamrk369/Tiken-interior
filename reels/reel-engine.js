@@ -150,7 +150,7 @@
   }
   function keyFont(style, size) {
     if (style === 'condensed') return { font: `400 ${size * 1.9}px ${FONTS.cond}`, size: size * 1.9, upper: true };
-    if (style === 'color') return { font: `800 ${size * 1.3}px ${FONTS.sans}`, size: size * 1.3 };
+    if (style === 'color') return { font: `800 ${size * 1.25}px ${FONTS.sans}`, size: size * 1.25 };
     return { font: `italic 500 ${size * 1.7}px ${FONTS.serif}`, size: size * 1.7 };
   }
   // one line of mixed text: plain sans + key words in the theme's key style
@@ -930,6 +930,7 @@
 
     // ---------------------------------------------------------- captions
     layoutCaption(cap, sc) {
+      cap = Object.assign({}, this.P.captionStyle || {}, cap);
       const ctx = this.octx, T = this.T, size = cap.size || 64, rate = cap.rate ?? 0.26, maxW = cap.maxW || 920;
       const words = parseWords(cap.text || ''); const style = cap.key || T.key;
       const lines = []; let line = { words: [], w: 0 };
@@ -1303,6 +1304,7 @@
         if (sc.layout && sc.caption.fx === 'fall') { const kw = sc.layout.words.find((w) => w.key); if (kw) ev.push([sc.start + kw.appear + kw.text.length * 0.06 + 0.3, 'pop', 1.4]); }
         if (sc.layout && sc.caption.fx === 'circle') { const kw = sc.layout.words.find((w) => w.key); if (kw) ev.push([sc.start + kw.appear + 0.35, 'whoosh', 0.6, true]); }
         if (sc.flash != null) ev.push([sc.start + sc.flash - 0.2, 'whoosh', 0.45, false]);
+        for (const e of sc.sfx || []) ev.push([sc.start + e[0], e[1], e[2], e[3]]);
         if (sc.punch && sc.layout && sc.layout.firstKey != null && sc.bg === 'aroll') ev.push([sc.start + sc.layout.firstKey, 'tick']);
       });
       this.sfxEvents = ev.sort((a, b) => a[0] - b[0]);
