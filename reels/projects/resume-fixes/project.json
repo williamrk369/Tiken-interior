@@ -621,7 +621,10 @@
     25.81,
     25.93
    ],
-   "end": 26.86
+   "end": 26.86,
+   "style": {
+    "y": 1150
+   }
   },
   {
    "text": "Add the *numbers*",
@@ -631,7 +634,10 @@
     27.05,
     27.11
    ],
-   "end": 27.42
+   "end": 27.42,
+   "style": {
+    "y": 1150
+   }
   },
   {
    "text": "for what you *changed*",
@@ -642,7 +648,10 @@
     27.75,
     28.16
    ],
-   "end": 28.69
+   "end": 28.69,
+   "style": {
+    "y": 1150
+   }
   },
   {
    "text": "because of you.",
@@ -826,7 +835,7 @@
  "overlays": [
   {
    "start": 1.0,
-   "end": 4.45,
+   "end": 4.380000000000001,
    "elements": [
     {
      "type": "stat",
@@ -850,59 +859,78 @@
    ]
   },
   {
-   "start": 6.2,
-   "end": 7.32,
-   "dim": 0.6,
-   "elements": [
-    {
-     "type": "doc",
-     "at": 0.1,
-     "y": 980,
-     "w": 380
-    }
-   ]
-  },
-  {
    "start": 14.48,
-   "end": 21.78,
+   "end": 18.91,
    "elements": [
     {
      "type": "xlist",
-     "title": "Keyword match",
-     "y": 430,
+     "title": "The job post asks for",
+     "y": 390,
      "items": [
       {
-       "label": "Job post asks for",
        "text": "\"Data analysis\"",
        "ok": true,
        "at": 0.2
-      },
-      {
-       "label": "Your resume says",
-       "text": "\"Good with numbers\"",
-       "ok": false,
-       "at": 4.550000000000002
       }
      ]
-    },
-    {
-     "type": "stamp",
-     "text": "REJECTED",
-     "at": 6.660000000000001,
-     "y": 605,
-     "x": 640,
-     "size": 96,
-     "breathe": 0
     }
    ]
   },
   {
-   "start": 24.57,
-   "end": 28.71,
+   "start": 4.38,
+   "end": 7.32,
    "elements": [
     {
      "type": "bpic",
-     "src": "broll/5.webp",
+     "src": "broll/15.webp",
+     "breathe": 0,
+     "drift": 0
+    }
+   ]
+  },
+  {
+   "start": 9.02,
+   "end": 10.51,
+   "elements": [
+    {
+     "type": "bpic",
+     "src": "broll/14.webp",
+     "breathe": 0,
+     "drift": 0
+    }
+   ]
+  },
+  {
+   "start": 11.75,
+   "end": 13.59,
+   "elements": [
+    {
+     "type": "bpic",
+     "src": "broll/13.webp",
+     "breathe": 0,
+     "drift": 0
+    }
+   ]
+  },
+  {
+   "start": 18.91,
+   "end": 21.78,
+   "elements": [
+    {
+     "type": "bpic",
+     "src": "broll/12.webp",
+     "breathe": 0,
+     "drift": 0
+    }
+   ]
+  },
+  {
+   "start": 23.34,
+   "end": 24.57,
+   "elements": [
+    {
+     "type": "bpic",
+     "src": "broll/11.webp",
      "breathe": 0,
      "drift": 0
     }
@@ -915,6 +943,20 @@
     {
      "type": "bpic",
      "src": "broll/4.webp",
+     "breathe": 0,
+     "drift": 0
+    }
+   ]
+  },
+  {
+   "start": 24.57,
+   "end": 28.71,
+   "elements": [
+    {
+     "type": "split",
+     "src": "broll/5.webp",
+     "contentH": 0.54,
+     "splitY": 1150,
      "breathe": 0,
      "drift": 0
     }

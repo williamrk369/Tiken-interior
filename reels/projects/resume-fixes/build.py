@@ -81,27 +81,30 @@ def at(word, n=0): return W[norm(word)][n]
 
 Y = 430
 B = 'broll/'
+# photo B-roll: 6 full-screen, 4 half photo / half talking head (each placed on the words it illustrates)
+full = [  # (image, start, end)
+    (B + '15.webp', at("it's", 0) - 0.1, 7.32),                 # it's not the job market, it's your resume
+    (B + '14.webp', at('use', 0) - 0.12, at('and', 1) + 0.0),    # use the right words
+    (B + '13.webp', at('you', 2) - 0.1, at('if', 1) - 0.1),     # pick out the skills
+    (B + '12.webp', at('good') - 0.12, 21.78),                  # "good with numbers" → rejected
+    (B + '11.webp', 23.34, at("don't") - 0.1),      # add numbers
+    (B + '4.webp', at('recruiter') - 0.25, 33.7),               # recruiters will stop scrolling
+]
 splits = [  # (image, start, end, content height fraction)
-    (B + '3.webp', 35.15, at('just', 2) - 0.08, 0.65),       # skip the fancy template
+    (B + '5.webp', at("don't") - 0.1, at('because') - 0.05, 0.54),  # don't just say what you did
+    (B + '3.webp', 35.15, at('just', 2) - 0.08, 0.65),               # skip the fancy template
     (B + '2.webp', at('just', 2) - 0.08, at('this', 1) - 0.02, 0.69),  # 1 column, clear headings, normal font
-    (B + '1.webp', 47.81, at('so', 2) - 0.05, 0.62),      # fix these 3 things → comment
+    (B + '1.webp', 47.81, at('so', 2) - 0.05, 0.62),                 # fix these 3 things → comment
 ]
 overlays = [
-    {'start': 1.0, 'end': 4.45, 'elements': [
+    {'start': 1.0, 'end': at("it's", 0) - 0.1, 'elements': [
         {'type': 'stat', 'label': 'Applications sent', 'value': 1000, 'suffix': '+', 'at': at('thousands') - 1.0, 'y': 300, 'w': 860},
         {'type': 'stat', 'label': 'Callbacks', 'value': 0, 'color': '#ff4d4d', 'at': at('calling') - 1.0, 'y': 450, 'w': 860, 'dur': 0.1}]},
-    {'start': 6.2, 'end': 7.32, 'dim': 0.6, 'elements': [{'type': 'doc', 'at': 0.1, 'y': 980, 'w': 380}]},
-    {'start': at('data') - 0.2, 'end': 21.78, 'elements': [
-        {'type': 'xlist', 'title': 'Keyword match', 'y': Y, 'items': [
-            {'label': 'Job post asks for', 'text': '"Data analysis"', 'ok': True, 'at': 0.2},
-            {'label': 'Your resume says', 'text': '"Good with numbers"', 'ok': False, 'at': at('good') - at('data') + 0.2}]},
-        {'type': 'stamp', 'text': 'REJECTED', 'at': at('rejected') - at('data') + 0.2, 'y': Y + 175, 'x': 640, 'size': 96, 'breathe': 0}]},
-    # full-screen photo B-roll
-    {'start': at("don't") - 0.1, 'end': at('because') - 0.05,
-     'elements': [{'type': 'bpic', 'src': B + '5.webp', 'breathe': 0, 'drift': 0}]},
-    {'start': at('recruiter') - 0.25, 'end': 33.7,
-     'elements': [{'type': 'bpic', 'src': B + '4.webp', 'breathe': 0, 'drift': 0}]},
-    # half photo / half talking head
+    {'start': at('data') - 0.2, 'end': at('good') - 0.12, 'elements': [
+        {'type': 'xlist', 'title': 'The job post asks for', 'y': Y - 40, 'items': [
+            {'text': '"Data analysis"', 'ok': True, 'at': 0.2}]}]},
+    *[{'start': round(s, 2), 'end': round(e, 2), 'elements': [{'type': 'bpic', 'src': src, 'breathe': 0, 'drift': 0}]}
+      for src, s, e in full],
     *[{'start': round(s, 2), 'end': round(e, 2),
        'elements': [{'type': 'split', 'src': src, 'contentH': ch, 'splitY': 1150, 'breathe': 0, 'drift': 0}]}
       for src, s, e, ch in splits],
@@ -125,4 +128,5 @@ base.update({'title': 'Resume fixes', 'theme': 'bold', 'music': 'lofi', 'caption
              'end': {'keyword': 'RESUME', 'text': 'Comment', 'tagline': 'Follow for more resume tips', 'flash': False}})
 json.dump(base, open(os.path.join(HERE, 'project.json'), 'w'), indent=1)
 print(len(caps), 'caption lines,', len(overlays), 'graphics/B-roll,', len(base['scenes']), 'scenes')
+for o in sorted(overlays, key=lambda o: o['start']): print(f"  {o['start']:6.2f}-{o['end']:6.2f}  " + ', '.join(e.get('src', e['type']) for e in o['elements']))
 for c in caps: print(f"{c['start']:6.2f}  {c['text']}")
