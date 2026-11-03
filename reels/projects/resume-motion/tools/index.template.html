@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[
+  {"id":"talk","type":"string","label":"Talking-head video","default":"assets/talk.mp4","group":"Talk"},
+  {"id":"accent","type":"color","label":"Accent amber","default":"#f5a524","group":"Colour"},
+  {"id":"good","type":"color","label":"Tick green","default":"#22c55e","group":"Colour"},
+  {"id":"bad","type":"color","label":"Cross red","default":"#ef4444","group":"Colour"},
+  {"id":"ink","type":"color","label":"Card ink","default":"#0f1115","group":"Colour"},
+  {"id":"capY","type":"number","label":"Caption line, talk shots (px from top)","default":1370,"min":900,"max":1650,"step":5,"group":"Captions"},
+  {"id":"capYFull","type":"number","label":"Caption line, full-screen graphics","default":1520,"min":900,"max":1700,"step":5,"group":"Captions"},
+  {"id":"capSize","type":"number","label":"Caption size","default":60,"min":40,"max":100,"step":1,"group":"Captions"},
+  {"id":"splitY","type":"number","label":"Half layout seam (px from top; 960 = exact half)","default":960,"min":700,"max":1300,"step":5,"group":"Layout"},
+  {"id":"headTop","type":"number","label":"Top of your hair in the video (px), for the half layout","default":430,"min":0,"max":1000,"step":5,"group":"Layout"},
+  {"id":"tight","type":"number","label":"Punch-in scale","default":1.32,"min":1,"max":1.8,"step":0.01,"group":"Layout"},
+  {"id":"fix1","type":"string","label":"Fix 1 card","default":"Use the right word","group":"Cards"},
+  {"id":"fix2","type":"string","label":"Fix 2 card","default":"Add numbers","group":"Cards"},
+  {"id":"fix3","type":"string","label":"Fix 3 card","default":"Skip the fancy template","group":"Cards"},
+  {"id":"fixAll","type":"string","label":"Wrap-up card","default":"Fix these 3 → more calls","group":"Cards"},
+  {"id":"keyword","type":"string","label":"Comment keyword","default":"resume","group":"Cards"},
+  {"id":"endLine","type":"string","label":"End card line","default":"Follow for more resume tips","group":"Cards"},
+  {"id":"endHold","type":"number","label":"End card length (s)","default":3.4,"min":1,"max":10,"step":0.1,"group":"Cards"}
+]'>
+<head>
+<meta charset="utf-8">
+<title>Resume fixes · huashu-motion</title>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/om.js"></script>
+<style id="om-fonts">
+@font-face { font-family: "Inter"; src: url("assets/fonts/Inter-var.woff") format("woff"); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-600.woff") format("woff"); font-weight: 600; font-style: normal; }
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-700.woff") format("woff"); font-weight: 700; font-style: normal; }
+@font-face { font-family: "Poppins"; src: url("assets/fonts/Poppins-800.woff") format("woff"); font-weight: 800; font-style: normal; }
+@font-face { font-family: "Playfair Display"; src: url("assets/fonts/PlayfairDisplay-400i.woff") format("woff"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Playfair Display"; src: url("assets/fonts/PlayfairDisplay-700i.woff") format("woff"); font-weight: 700; font-style: italic; }
+@font-face { font-family: "Playfair Display"; src: url("assets/fonts/PlayfairDisplay-700.woff") format("woff"); font-weight: 700; font-style: normal; }
+</style>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0b0c0f; }
+  #film { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0b0c0f; font-family: Poppins, Inter, sans-serif; color: #fff; }
+
+  /* the talk: punch-ins scale #talk, the split screen moves #talkwrap down */
+  #talkwrap { position: absolute; inset: 0; will-change: transform; transform-origin: 50% 37%; }
+  #talk { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; transform-origin: 50% 37%; }
+  #shade { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, #000000c4 0%, #00000059 22%, #0000 42%, #0000 60%, #000000b3 100%); }
+
+  /* motion-graphic panels, built in code (no photos): white cards on a soft blue-grey ground */
+  .seam { position: absolute; left: 0; width: 1080px; height: 8px; background: var(--good); box-shadow: 0 0 28px var(--good); transform-origin: 0 50%; opacity: 0; }
+  .panel { position: absolute; left: 0; top: 0; width: 1080px; height: var(--seam); overflow: hidden; visibility: hidden; color: #f3f5f9;
+    background-color: #07080b; background-image: radial-gradient(120% 95% at 50% 35%, #0000 45%, #000d 100%), radial-gradient(circle, #ffffff26 1.7px, #0000 2.4px);
+    background-size: 100% 100%, 42px 42px; background-position: 0 0, var(--dotx, 0px) var(--doty, 0px); box-shadow: 0 30px 80px #000c; }
+  .panel.full { height: 1920px; }
+  .hid { visibility: hidden; opacity: 0; }
+  .doc { position: absolute; background: linear-gradient(180deg, #161a23, #10131a); border-radius: 30px; box-shadow: 0 28px 70px #000c, inset 0 0 0 1.5px #ffffff17; overflow: hidden; padding: 36px 40px; box-sizing: border-box; }
+  .bar { height: 16px; border-radius: 8px; background: #ffffff1c; margin: 14px 0; }
+  .bar.dark { background: #ffffff52; height: 20px; }
+  .bar.w { background: #ffffffb3; }
+  .av { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #ffe08a, #f5a524); flex: none; }
+  .av.sm { width: 64px; height: 64px; }
+  .dh { display: flex; gap: 24px; align-items: center; margin-bottom: 18px; }
+  .dh > div:last-child { flex: 1; }
+  .sec { margin-top: 34px; }
+  .scan { position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--good); box-shadow: 0 0 30px 10px #22c55e80; opacity: 0; }
+  .stamp { position: absolute; left: 50%; top: 50%; width: 520px; margin: -72px 0 0 -260px; text-align: center; box-sizing: border-box;
+    border: 10px solid var(--bad); color: #ff5a5a; font-weight: 900; font-size: 92px; line-height: 1.25; letter-spacing: .04em; border-radius: 22px; background: #0b0d12d9; box-shadow: 0 0 40px #ef444455; }
+  .ch { display: flex; align-items: center; gap: 20px; padding-bottom: 20px; border-bottom: 2px solid #ffffff14; margin-bottom: 14px; }
+  .ic { width: 66px; height: 66px; border-radius: 18px; background: #2a2112; display: grid; place-items: center; flex: none; }
+  .ic svg { width: 38px; height: 38px; }
+  .ch .ct { font-weight: 850; font-size: 44px; }
+  .ch .cs { margin-left: auto; font-weight: 700; font-size: 26px; letter-spacing: .14em; text-transform: uppercase; color: #8a93a6; }
+  .req { position: relative; display: flex; align-items: center; gap: 22px; height: 84px; padding: 0 18px; border-radius: 18px; font-weight: 750; font-size: 42px; }
+  .req i { width: 14px; height: 14px; border-radius: 50%; background: #9aa3b5; flex: none; }
+  .req .bar { flex: 1; margin: 0; }
+  .tk, .xk { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .tk { background: var(--good); } .xk { background: var(--bad); }
+  .tk svg, .xk svg { width: 32px; height: 32px; }
+  .req .tk, .req .xk { margin-left: auto; }
+  .sweep { position: absolute; left: 22px; right: 22px; height: 84px; border-radius: 18px; background: #f5a52422; outline: 3px solid #f5a52466; outline-offset: -3px; }
+  .ch-l { position: absolute; left: 0; top: 0; overflow: visible; }
+  .ring { position: absolute; right: 40px; top: 30px; width: 170px; text-align: center; }
+  .ring svg { width: 130px; height: 130px; }
+  .ring b { position: absolute; left: 0; right: 0; top: 40px; font-weight: 900; font-size: 44px; color: #ff5a5a; }
+  .ring small { display: block; font-weight: 700; font-size: 24px; letter-spacing: .1em; text-transform: uppercase; color: #8a93a6; }
+  .row { display: flex; flex-direction: column; gap: 12px; padding: 24px 30px; border-radius: 22px; background: #ffffff0b; margin-top: 24px; }
+  .lab { align-self: flex-start; font-weight: 800; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; padding: 8px 18px; border-radius: 999px; }
+  .lab.red { background: #3b1416; color: #fca5a5; } .lab.green { background: #0f2e1c; color: #86efac; }
+  .bt { font-weight: 750; font-size: 46px; line-height: 1.32; }
+  .slot { display: inline-block; padding: 0 14px; border: 4px dashed #f5a524; border-radius: 14px; color: #ffd98a; background: #7a4a0a55; font-weight: 850; }
+  .note { font-weight: 650; font-size: 30px; color: #fca5a5; }
+  .arrow { text-align: center; font-size: 60px; font-weight: 900; color: #f5b84a; margin: 10px 0 -8px; }
+  .pill { display: inline-flex; align-items: center; gap: 12px; padding: 12px 26px 12px 14px; border-radius: 999px; font-weight: 800; font-size: 30px; color: #fff;
+    box-shadow: 0 12px 30px #0003; white-space: nowrap; }
+  .pill .pi { width: 42px; height: 42px; border-radius: 50%; background: #ffffff33; display: grid; place-items: center; }
+  .pill .pi svg { width: 26px; height: 26px; }
+  .pill.green { background: #16a34a; } .pill.red { background: #dc2626; } .pill.blue { background: var(--accent); font-size: 42px; padding: 14px 40px; }
+  .hdr { position: absolute; left: 0; right: 0; top: 64px; text-align: center; }
+  .feedlbl { position: absolute; top: 160px; left: 0; right: 0; text-align: center; font-weight: 800; font-size: 38px; letter-spacing: .16em; text-transform: uppercase; color: #9fb3d9; }
+  .feedwin { position: absolute; left: 110px; top: 250px; width: 860px; height: 1120px; overflow: visible; }
+  .feedmask { position: absolute; inset: 0; overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
+  .feed { position: absolute; left: 0; top: 0; width: 100%; }
+  .fc { margin-bottom: 26px; border-radius: 26px; background: #ffffff17; display: flex; align-items: center; gap: 28px; padding: 0 34px; box-sizing: border-box; }
+  .fc .av { width: 110px; height: 110px; background: #ffffff2e; }
+  .fc > div:last-child { flex: 1; } .fc .bar { background: #ffffff38; }
+  .fc.hit { background: linear-gradient(180deg, #1b2335, #121827); color: #fff; } .fc.hit .bar { background: #ffffff2a; } .fc.hit .av { background: linear-gradient(135deg, #ffe08a, #f5a524); }
+  .fc.hit .bt { font-weight: 800; font-size: 40px; line-height: 1.2; margin-top: 6px; }
+  .hitring { position: absolute; left: -10px; width: 880px; height: 220px; border: 7px solid var(--accent); border-radius: 32px; box-shadow: 0 0 60px #f5a524aa; box-sizing: border-box; }
+  .fancy { padding: 0; display: flex; }
+  .side { width: 300px; height: 100%; background: linear-gradient(180deg, #1e3a8a, #2563eb); padding: 44px 30px; box-sizing: border-box; transform-origin: 0 50%; flex: none; }
+  .side .av { margin: 0 auto 22px; width: 130px; height: 130px; background: #ffffffcc; }
+  .icons { display: flex; gap: 16px; justify-content: center; margin: 28px 0; }
+  .icons span { width: 62px; height: 62px; border-radius: 50%; background: #ffffff2b; display: grid; place-items: center; }
+  .icons svg { width: 32px; height: 32px; }
+  .meter { height: 14px; border-radius: 7px; background: #ffffff33; margin: 26px 0; overflow: hidden; } .meter b { display: block; height: 100%; background: #93c5fd; }
+  .main { flex: 1; padding: 44px 36px; background: #10131a; }
+  .mh { font-weight: 800; font-size: 28px; letter-spacing: .12em; color: #f7c873; margin: 8px 0 2px; }
+  .tbl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0; }
+  .tbl div { height: 72px; border-radius: 8px; background: #1b2540; border: 2px solid #2d3d66; }
+  .clean { padding: 52px 64px; outline: 7px solid var(--good); outline-offset: -7px; }
+  .cn { font-weight: 900; font-size: 58px; letter-spacing: -.01em; }
+  .hd { font-weight: 850; font-size: 34px; letter-spacing: .1em; margin: 36px 0 4px; padding-bottom: 8px; border-bottom: 3px solid #ffffff1a; }
+  .chips { position: absolute; left: 0; right: 0; display: flex; justify-content: center; gap: 14px; }
+  .chips .pill { font-size: 28px; }
+  .rrow { display: flex; align-items: center; gap: 26px; height: 124px; border-bottom: 2px solid #ffffff14; font-weight: 850; font-size: 48px; }
+  .rrow:last-child { border-bottom: 0; }
+  .rrow .ic { width: 78px; height: 78px; } .rrow .tk { margin-left: auto; width: 64px; height: 64px; }
+  .gdoc .ct { font-weight: 850; font-size: 40px; }
+  .gdoc svg { display: block; width: 100%; height: 190px; margin-top: 14px; overflow: visible; }
+  .panel .pin { position: absolute; left: 0; top: 0; width: 1080px; height: 1150px; transform-origin: 50% 0; transform: scale(var(--pin)); }
+  .panel.full .pin { height: 1920px; transform: none; }
+  .wd { opacity: 0; display: inline-block; }
+  .bigt { display: inline-block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 128px; line-height: 1.05; padding: 0 20px 10px; background: linear-gradient(180deg, #ffe780, #f2aa1c); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 24px #f5a52455); }
+  .fixtag { display: inline-block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 84px; line-height: 1; padding: 0 8px 8px; background: linear-gradient(180deg, #ffe780, #f2aa1c); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 24px #f5a52455); }
+  .bigfix { position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .bigfix .no { font-weight: 600; font-size: 60px; letter-spacing: .5em; color: #f6f2ea; margin-left: .5em; }
+  .bigfix .n { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 400px; line-height: 1; padding: 0 40px 40px; background: linear-gradient(180deg, #ffe780, #f2aa1c); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 24px #f5a52455); }
+  .bigfix .rule { width: 300px; height: 14px; border-radius: 9px; background: var(--accent); margin-top: 34px; transform-origin: 50% 50%; }
+  .chapter .tt .tw { display: inline-block; clip-path: inset(0 100% 0 0); }
+
+  /* packaging cards */
+  .card { position: absolute; opacity: 0; visibility: hidden; will-change: transform; }
+  .chapter { left: 64px; top: 236px; background: color-mix(in srgb, var(--ink) 92%, transparent); border-radius: 26px; padding: 24px 40px 28px;
+    outline: 2px solid #ffffff22; outline-offset: -2px; box-shadow: 0 24px 60px #0007; }
+  .chapter .no { font-weight: 800; font-size: 26px; letter-spacing: .3em; color: #f7c873; }
+  .chapter .rule { height: 6px; width: 110px; border-radius: 9px; background: var(--accent); margin: 14px 0 16px; transform-origin: 0 50%; }
+  .chapter .tt { font-weight: 850; font-size: 62px; line-height: 1.08; letter-spacing: -.01em; white-space: nowrap; }
+
+  .stat { left: 64px; display: flex; align-items: center; gap: 22px; background: #0d1017e8; outline: 1.5px solid #ffffff1f; color: #fff; border-radius: 999px;
+    padding: 18px 40px 18px 22px; box-shadow: 0 18px 50px #0006; }
+  .stat .dot { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 34px; }
+  .stat .num { font-weight: 900; font-size: 64px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .stat .lbl { font-weight: 600; font-size: 34px; color: #aab3c5; }
+
+  .chip { left: 64px; top: 250px; background: #ffffffee; color: var(--ink); border-radius: 30px; padding: 22px 34px; box-shadow: 0 18px 50px #0006; }
+  .chip .k { font-weight: 700; font-size: 28px; letter-spacing: .12em; color: #5b6272; text-transform: uppercase; }
+  .chip .v { display: flex; align-items: center; gap: 18px; margin-top: 8px; font-weight: 900; font-size: 58px; }
+  .tick { width: 56px; height: 56px; border-radius: 50%; background: var(--good); display: grid; place-items: center; }
+  .tick svg { width: 34px; height: 34px; }
+
+  .comment { left: 70px; right: 70px; top: 250px; display: flex; align-items: center; gap: 24px; background: #0d1017f0; outline: 1.5px solid #ffffff22; color: #fff;
+    border-radius: 999px; padding: 18px 20px 18px 18px; box-shadow: 0 20px 60px #0007; }
+  .comment .av { width: 84px; height: 84px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 40px; flex: none; }
+  .comment .tx { flex: 1; font-size: 44px; font-weight: 600; color: #c9d2e3; white-space: nowrap; }
+  .comment .tx b { color: #ffc94d; font-weight: 900; }
+  .comment .send { width: 84px; height: 84px; border-radius: 50%; background: var(--good); display: grid; place-items: center; flex: none; }
+
+  /* captions: Inter, word by word; the key word sits on the blue block of the B-roll headlines */
+  #caps { position: absolute; inset: 0; pointer-events: none; }
+  .cap { position: absolute; left: 60px; right: 60px; text-align: center; opacity: 0; }
+  .cap .w { opacity: 0; display: inline-block; font-family: Poppins, sans-serif; font-weight: 600; letter-spacing: -.005em; line-height: 1.22; margin: 0 .1em;
+    color: #fff; text-shadow: 0 .04em .5em #000d, 0 0 .12em #0008; }
+  .cap .w.key { position: relative; color: var(--accent); font-weight: 700; text-shadow: 0 .04em .5em #000d, 0 0 .5em #f5a52440; }
+  .cap .w.key .blk { display: none; }
+  .cap .w.key .t { position: relative; }
+
+  #grain { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(#ffffff1c 0.75px, #0000 1.15px); background-size: 4px 4px; mix-blend-mode: overlay; opacity: .7; }
+  #endcard { position: absolute; inset: 0; opacity: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
+    background: radial-gradient(120% 80% at 50% 40%, #12151cf2, #07080af7); }
+  #endcard .big { font-weight: 700; font-size: 104px; letter-spacing: -.02em; line-height: 1; }
+  #endcard .kw { position: relative; display: inline-block; padding: 6px 30px 14px; margin-top: 10px; }
+  #endcard .kw .blk { display: none; }
+  #endcard .kw .t { position: relative; display: inline-block; font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700; font-size: 190px; line-height: 1.1; padding: 0 30px 20px; background: linear-gradient(180deg, #ffe780, #f2aa1c); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 24px #f5a52455); }
+  #endcard .line { font-weight: 600; font-size: 46px; color: #c9d2e3; }
+</style>
+</head>
+<body>
+<div id="film" data-composition-id="film" data-width="1080" data-height="1920">
+  <audio id="om-voice" src="assets/voice.wav" data-start="0" data-duration="55.147" data-track-index="9" data-volume="1"></audio>
+  <div id="talkwrap" data-om-id="talk-frame">
+    <video id="talk" class="clip" data-om-id="talk" data-var-src="talk" src="assets/talk.mp4" data-start="0" data-track-index="0" muted playsinline></video>
+    <div id="shade"></div>
+  </div>
+  <div id="panels"></div>
+  <div class="seam" data-om-id="seam"></div>
+
+  <div class="card stat" id="stat1" data-om-id="stat-applications" style="top:250px">
+    <div class="dot" style="background:var(--accent)">✉</div><div class="num"><span class="v">0</span>+</div><div class="lbl">applications</div>
+  </div>
+  <div class="card stat" id="stat2" data-om-id="stat-callbacks" style="top:380px">
+    <div class="dot" style="background:var(--bad)">✆</div><div class="num" style="color:var(--bad)">0</div><div class="lbl">callbacks</div>
+  </div>
+  <div class="card comment" id="comment" data-om-id="comment-bar">
+    <div class="av">R</div><div class="tx">Comment <b data-om-var="keyword">“RESUME”</b></div>
+    <div class="send"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="#fff"/></svg></div>
+  </div>
+
+  <div id="caps" data-om-id="captions"></div>
+
+  <div id="grain"></div>
+  <div id="endcard" data-om-id="end-card">
+    <div class="big">Comment</div>
+    <div class="kw"><div class="blk"></div><div class="t" data-var-text="keyword">resume</div></div>
+    <div class="line" data-var-text="endLine">Follow for more resume tips</div>
+  </div>
+</div>
+
+<script type="application/json" id="reel-data">__DATA__</script>
+<script type="application/json" id="om-cues">__CUES__</script>
+<script>
+  // declared defaults first, so the film also builds outside the om engine
+  const DECL = JSON.parse(document.documentElement.getAttribute('data-composition-variables'));
+  const V = Object.assign(Object.fromEntries(DECL.map((d) => [d.id, d.default])), OM.vars());
+  const D = JSON.parse(document.getElementById('reel-data').textContent);
+  const $ = (s, r = document) => r.querySelector(s);
+  const film = $('#film');
+  const TALK_END = 55.147;
+  const SEAM = Number(V.splitY), TIGHT = Number(V.tight);
+  film.style.setProperty('--seam', SEAM + 'px');
+  film.style.setProperty('--pin', String(SEAM / 1150));
+  $('.seam').style.top = (SEAM - 4) + 'px';
+  $('#comment b').textContent = `“${V.keyword}”`;
+
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+  // the dotted ground drifts slowly for the whole film (a pure function of time)
+  tl.fromTo('#film', { '--dotx': '0px', '--doty': '0px' }, { '--dotx': '252px', '--doty': '420px', duration: TALK_END + 3.4, ease: 'none', immediateRender: true }, 0);
+  const set = (el, at, v) => tl.set(el, v, at);
+
+  // ---- music: lo-fi explainer direction, ducked under the voice ------------------------------
+  OM.music({ product: 'explainer', variant: 2 });
+
+  tl.addLabel('scene:hook', 0);
+
+  // ---- packaging, each landing on its word ----------------------------------------------------
+  const cue = (w, n) => { try { return OM.cue(w, n); } catch { return null; } };
+  function cardIn(el, at, out, sound = 'pop') {
+    tl.fromTo(el, { autoAlpha: 0, y: 30, scale: 0.92 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: 'back.out(1.6)', immediateRender: false }, at)
+      .fromTo(el, { autoAlpha: 1, y: 0, scale: 1 }, { autoAlpha: 0, y: -16, duration: 0.28, ease: 'power2.in', immediateRender: false }, out - 0.28);
+    if (sound) OM.sfx(sound, at + 0.08, { gain: 0.6 });
+  }
+  // the hook: applications pile up, callbacks stay at zero
+  const tThousands = cue('thousands') ?? 1.24, tCalling = cue('calling') ?? 3.45;
+  cardIn('#stat1', tThousands - 0.35, 4.38);
+  const c1 = { v: 0 };
+  tl.fromTo(c1, { v: 0 }, { v: 1000, immediateRender: false, duration: 0.9, ease: 'power3.out', onUpdate: () => { $('#stat1 .v').textContent = Math.round(c1.v).toLocaleString('en-US'); } }, tThousands - 0.3);
+  OM.sfx('count', tThousands - 0.25, { dur: 0.8, gain: 0.4 });
+  cardIn('#stat2', tCalling - 0.25, 4.38, 'thud');
+
+  // rows 5–6 · "fix 01" and "right word" are big words behind the speaker (baked into assets/talk.mp4 by tools/depthtext.py)
+
+  // ---- motion graphics, built in code; each lands on the word in the shot list ------------------
+  const panelsRoot = $('#panels');
+  const SVG = {
+    check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    cross: '<svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg>',
+    brief: '<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5" fill="none" stroke="#ffc94d" stroke-width="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18" fill="none" stroke="#ffc94d" stroke-width="2.2"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#ffc94d" stroke-width="2.4"/><path d="M15 15l5 5" stroke="#ffc94d" stroke-width="2.6" stroke-linecap="round"/></svg>',
+    chart: '<svg viewBox="0 0 24 24"><path d="M5 19V13M10 19V9M15 19V11M20 19V5" stroke="#ffc94d" stroke-width="3" stroke-linecap="round"/></svg>',
+    layers: '<svg viewBox="0 0 24 24"><path d="M12 4l9 5-9 5-9-5z" fill="#ffc94d"/><path d="M3 14l9 5 9-5" fill="none" stroke="#ffc94d" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+    phone: '<svg viewBox="0 0 24 24"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v3a2 2 0 0 1-2 2A17 17 0 0 1 4 5a2 2 0 0 1 2-2z" fill="#fff"/></svg>',
+    mail: '<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="#fff" stroke-width="2.2"/><path d="M3.5 7l8.5 6 8.5-6" fill="none" stroke="#fff" stroke-width="2.2"/></svg>',
+    pin: '<svg viewBox="0 0 24 24"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z" fill="#fff"/><circle cx="12" cy="10" r="2.2" fill="#ffc94d"/></svg>',
+  };
+  const bars = (ws, cls = '') => ws.map((w) => `<div class="bar ${cls}" style="width:${w}%"></div>`).join('');
+  const pill = (cls, icon, text, extra = '') => `<span class="pill ${cls} hid" ${extra}><span class="pi">${SVG[icon]}</span>${text}</span>`;
+  // exact whole-word lookup on the aligned transcript (OM.cue matches inside words: "is" would hit "analysis")
+  const CUEW = JSON.parse(document.getElementById('om-cues').textContent).words;
+  const nz = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const W = (w, n = 1) => { const t = nz(w); let k = 0; for (const x of CUEW) if (nz(x.word) === t && ++k === n) return x.start; return null; };
+  const TALK_Y = SEAM + 24 - Number(V.headTop);                  // split: the talk at full size, head just under the seam
+  const PANELS = [];
+  // a panel; split panels move the talk under the seam unless the neighbour already did
+  function panel(id, start, end, kind, html, { talkIn = true, talkOut = true } = {}) {
+    const el = document.createElement('div');
+    el.className = `panel ${kind}`; el.id = id; el.dataset.omId = id;
+    el.innerHTML = `<div class="pin">${html}</div>`;
+    panelsRoot.appendChild(el);
+    PANELS.push({ id, start, end, kind });
+    tl.addLabel(`scene:${id}`, start);
+    if (kind === 'split') {
+      tl.fromTo(el, { autoAlpha: 1, yPercent: -101 }, { yPercent: 0, duration: 0.55, immediateRender: false }, start);
+      if (talkIn) {
+        tl.fromTo('#talkwrap', { y: 0 }, { y: TALK_Y, duration: 0.55, ease: 'expo.inOut', immediateRender: false }, start - 0.05);
+        OM.sfx('slide', start, { gain: 0.35, dur: 0.5 });
+      }
+      tl.fromTo('.seam', { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.45, immediateRender: false }, start + 0.15);
+      if (talkOut) {
+        tl.fromTo(el, { yPercent: 0 }, { yPercent: -101, duration: 0.42, ease: 'expo.in', immediateRender: false }, end - 0.42)
+          .fromTo('#talkwrap', { y: TALK_Y }, { y: 0, duration: 0.45, ease: 'expo.inOut', immediateRender: false }, end - 0.4)
+          .fromTo('.seam', { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, end - 0.3)
+          .set(el, { autoAlpha: 0 }, end);
+        OM.sfx('whip', end - 0.38, { gain: 0.35 });
+      } else tl.set(el, { autoAlpha: 0 }, end + 0.45);       // the next panel covers it first
+    } else {
+      tl.fromTo(el, { autoAlpha: 0, scale: 1.1 }, { autoAlpha: 1, scale: 1, duration: 0.3, immediateRender: false }, start)
+        .fromTo('.seam', { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, start)
+        .fromTo(el, { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.22, immediateRender: false }, end - 0.22);
+    }
+    return el;
+  }
+  const show = (sel, at, from = {}, dur = 0.42, ease = 'back.out(1.8)') =>
+    tl.fromTo(sel, { autoAlpha: 0, scale: 0.7, ...from }, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0, duration: dur, ease, immediateRender: false }, at);
+  // a stamp that LANDS on the word (it falls for 0.26 s before)
+  const slam = (sel, word, rot = -12) => {
+    tl.fromTo(sel, { autoAlpha: 0, scale: 2.3, rotation: rot }, { autoAlpha: 1, scale: 1, rotation: rot, duration: 0.26, ease: 'power4.in', immediateRender: false }, word - 0.26);
+    OM.sfx('stamp', word, { gain: 0.7 });
+  };
+  const shake = (sel, at) => tl.fromTo(sel, { x: -14 }, { x: 0, duration: 0.45, ease: 'elastic.out(1.2, 0.3)', immediateRender: false }, at);
+
+  // rows 3–4 · "it's not the job market, it's your resume."
+  const tIts = W("it's") ?? 4.48, tJob = W('job') ?? 5.06, tIts2 = W("it's", 2) ?? 5.97, tResume = W('resume') ?? 6.59;
+  panel('panel-resume', tIts - 0.08, 7.32, 'split', `
+    <div class="doc" id="jm" style="left:170px;top:60px;width:740px;height:150px;display:flex;align-items:center;gap:26px;padding:0 40px">
+      <div class="ic">${SVG.brief}</div><div style="font-weight:850;font-size:52px">Job market</div>
+      <span class="xk hid" id="jm-x" style="margin-left:auto;width:76px;height:76px">${SVG.cross}</span></div>
+    <div class="doc hid" id="sc-doc" style="left:250px;top:250px;width:580px;height:720px">
+      <div class="dh"><div class="av"></div><div>${bars([72, 46], 'dark')}</div></div>
+      ${[0, 1, 2].map(() => `<div class="sec">${bars([34], 'dark')}${bars([94, 82, 88])}</div>`).join('')}
+      <div class="scan" id="sc-line"></div><div class="stamp hid" id="sc-stamp">REJECTED</div></div>`);
+  show('#jm', tIts, { y: 40, scale: 0.95 }, 0.45, 'expo.out');
+  show('#jm-x', tJob); OM.sfx('pop', tJob + 0.05, { gain: 0.5, note: -3 });
+  show('#sc-doc', tIts2, { y: 80, scale: 0.92 }, 0.4, 'expo.out'); OM.sfx('paper', tIts2 + 0.1, { gain: 0.5 });
+  tl.fromTo('#sc-line', { opacity: 1, y: 0 }, { opacity: 1, y: 700, duration: tResume - tIts2 - 0.25, ease: 'power1.inOut', immediateRender: false }, tIts2 + 0.15)
+    .fromTo('#sc-line', { opacity: 1 }, { opacity: 0, duration: 0.15, immediateRender: false }, tResume - 0.1);
+  slam('#sc-stamp', tResume); shake('#sc-doc', tResume + 0.02);
+
+  // rows 7–12 · job post → the skill → "data analysis" ✓ → your resume → "good with numbers" ✗ → rejected
+  const tAnd = W('and', 2) ?? 10.51, tPick = W('pick') ?? 12.37, tSkill = W('skill') ?? 12.86, tData = W('data') ?? 14.68;
+  const tResume2 = W('resume', 2) ?? 16.35, tGood = W('good') ?? 19.03, tWith = W('with') ?? 19.21, tNumbers = W('numbers') ?? 19.38;
+  const tThen = W('then') ?? 20.13, tRejected = W('rejected') ?? 21.14;
+  panel('panel-keywords', tAnd - 0.08, 21.82, 'split', `
+    <div class="doc" id="kw-job" style="left:70px;top:56px;width:940px;height:430px">
+      <div class="ch"><div class="ic">${SVG.brief}</div><div class="ct">Job post</div><div class="cs">Requirements</div></div>
+      <div class="req" id="kw-r1"><i></i><span>Data analysis</span><span class="tk hid" id="kw-r1t">${SVG.check}</span></div>
+      <div class="req"><i></i>${bars([56])}</div><div class="req"><i></i>${bars([38])}</div>
+      <div class="sweep hid" id="kw-sweep"></div></div>
+    <div class="doc hid" id="kw-res" style="left:70px;top:536px;width:940px;height:420px">
+      <div class="ch"><div class="av sm"></div><div class="ct">Your resume</div></div>
+      <div class="req" id="kw-l1"><i></i><span id="kw-typed"><span class="wd" id="kw-w1">Good</span> <span class="wd" id="kw-w2">with</span> <span class="wd" id="kw-w3">numbers</span></span><span class="xk hid" id="kw-l1x">${SVG.cross}</span></div>
+      <div class="req"><i></i>${bars([48])}</div><div class="req"><i></i>${bars([30])}</div>
+      <div class="stamp hid" id="kw-stamp">REJECTED</div></div>
+    <svg class="ch-l" id="kw-link" width="1080" height="1150"><path id="kw-path" d="" fill="none" stroke="#ef4444" stroke-width="7" stroke-linecap="round"/></svg>
+    <div class="ring hid" id="kw-ring" style="right:110px;top:596px"><svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="54" fill="none" stroke="#3b1416" stroke-width="14"/></svg><b>0%</b><small>Keyword match</small></div>`);
+  const rowY = (row, doc) => doc.offsetTop + row.offsetTop + row.offsetHeight / 2;
+  const y1 = rowY($('#kw-r1'), $('#kw-job')), y2 = rowY($('#kw-l1'), $('#kw-res'));
+  $('#kw-path').setAttribute('d', `M 128 ${y1} C 18 ${y1 + 60}, 18 ${y2 - 60}, 128 ${y2}`);
+  const pathLen = $('#kw-path').getTotalLength();
+  $('#kw-path').style.strokeDasharray = pathLen; $('#kw-path').style.strokeDashoffset = pathLen;
+  $('#kw-sweep').style.top = $('#kw-r1').offsetTop + 'px';
+  show('#kw-job', tAnd, { y: 60, scale: 0.95 }, 0.5, 'expo.out');
+  tl.fromTo('#kw-sweep', { autoAlpha: 0, y: 168 }, { autoAlpha: 1, y: 168, duration: 0.15, immediateRender: false }, tPick - 0.1)
+    .fromTo('#kw-sweep', { y: 168 }, { y: 0, duration: tSkill - tPick + 0.05, ease: 'expo.inOut', immediateRender: false }, tPick);
+  OM.sfx('whoosh', tPick, { gain: 0.35 }); OM.sfx('tick', tSkill, { gain: 0.45 });
+  tl.fromTo('#kw-r1', { backgroundColor: '#14532d00' }, { backgroundColor: '#14532d99', duration: 0.25, immediateRender: false }, tData)
+    .fromTo('#kw-sweep', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.2, immediateRender: false }, tData);
+  show('#kw-r1t', tData); OM.sfx('ding', tData + 0.05, { gain: 0.5 });
+  show('#kw-res', tResume2 - 0.25, { y: 120, scale: 0.95 }, 0.45, 'expo.out'); OM.sfx('paper', tResume2, { gain: 0.55 });
+  [[1, tGood], [2, tWith], [3, tNumbers]].forEach(([n, t]) => { tl.fromTo(`#kw-w${n}`, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.14, immediateRender: false }, t); OM.sfx('tick', t, { gain: 0.3 }); });
+  tl.fromTo('#kw-l1', { backgroundColor: '#7f1d1d00' }, { backgroundColor: '#7f1d1d99', duration: 0.25, immediateRender: false }, tNumbers + 0.3);
+  show('#kw-l1x', tNumbers + 0.35); OM.sfx('pop', tNumbers + 0.4, { gain: 0.4, note: -3 });
+  tl.fromTo('#kw-path', { strokeDashoffset: pathLen }, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.inOut', immediateRender: false }, tThen);
+  OM.sfx('draw', tThen, { dur: 0.45, gain: 0.35 });
+  show('#kw-ring', tThen + 0.4); OM.sfx('thud', tThen + 0.45, { gain: 0.45 });
+  slam('#kw-stamp', tRejected); shake('#kw-res', tRejected + 0.02);
+
+  // row 13 · "And the fix number 2" → full-screen FIX 02, landing on "fix"
+  const tFix2 = W('fix', 2) ?? 22.19, tIs = W('is', 4) ?? 22.96;
+  panel('panel-fix2', 21.82, tIs - 0.04, 'full', `
+    <div class="bigfix"><div class="no">FIX</div><div class="n" id="f2-n">02</div><div class="rule" id="f2-rule"></div></div>`);
+  tl.set('#panel-keywords', { autoAlpha: 0 }, 22.15).set('#talkwrap', { y: 0 }, 22.15);
+  tl.fromTo('#f2-n', { autoAlpha: 0, scale: 1.6, y: 30 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.3, ease: 'power4.in', immediateRender: false }, tFix2 - 0.3)
+    .fromTo('#f2-rule', { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: 'expo.out', immediateRender: false }, tFix2);
+  OM.sfx('impact', tFix2, { gain: 0.6 });
+
+  // rows 14–18 · "is add numbers" (half title) → before / after on the experience card
+  const tAdd = W('add', 1) ?? 23.49, tSay = W('say') ?? 25.36, tDid = W('did') ?? 25.98, tNum = W('number', 3) ?? 27.16, tChanged = W('changed') ?? 28.21;
+  const tAnd5 = W('and', 5) ?? 30.12;
+  panel('panel-numbers', tIs - 0.04, tAnd5 - 0.05, 'split', `
+    <div class="hdr" style="top:48px"><span class="bigt hid" id="nm-h">Add numbers</span></div>
+    <div class="doc hid" id="nm-doc" style="left:70px;top:220px;width:940px;height:760px">
+      <div class="ch"><div class="ic">${SVG.brief}</div><div class="ct">Experience</div></div>
+      <div class="row" id="nm-before"><span class="lab red">Before</span><div class="bt">Managed social media.</div><div class="note hid" id="nm-note">Only says what you did</div></div>
+      <div class="arrow hid" id="nm-arrow">↓</div>
+      <div class="row hid" id="nm-after"><span class="lab green">After</span><div class="bt">Grew followers by <span class="slot" id="nm-s1">X%</span></div></div>
+      <div style="position:absolute;left:40px;bottom:36px">${pill('green', 'check', 'Shows the change you made', 'id="nm-impact"')}</div></div>`, { talkOut: false });
+  tl.fromTo('#nm-h', { autoAlpha: 0, scale: 1.3 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'back.out(2)', immediateRender: false }, tAdd - 0.12);
+  OM.sfx('pop', tAdd, { gain: 0.55 });
+  show('#nm-doc', tSay - 0.2, { y: 70, scale: 0.95 }, 0.42, 'expo.out'); OM.sfx('tick', tSay, { gain: 0.45 });
+  show('#nm-note', tDid, { x: -20, scale: 1 }, 0.3, 'expo.out');
+  show('#nm-arrow', tNum - 0.35, { y: -20, scale: 1 }, 0.3, 'expo.out');
+  show('#nm-after', tNum - 0.2, { y: 30, scale: 0.96 }, 0.35, 'expo.out'); OM.sfx('pop', tNum, { gain: 0.5, note: 2 });
+  tl.fromTo('#nm-s1', { boxShadow: '0 0 0 0 #f5a52400', scale: 1 }, { boxShadow: '0 0 0 12px #f5a52433', scale: 1.08, duration: 0.35, yoyo: true, repeat: 1, immediateRender: false }, tChanged);
+  show('#nm-impact', tChanged); OM.sfx('ding', tChanged + 0.05, { gain: 0.5, note: 5 });
+
+  // rows 19–20 · "and recruiter would stop scrolling" → the feed whips and stops on "stop"; "this" pulses the number
+  const N = 9, HIT = 6, FH = [196, 238, 212, 254, 188, 228, 200, 240, 214];
+  const HIT_Y = FH.slice(0, HIT).reduce((a, h) => a + h + 26, 0);
+  const tStop = W('stop') ?? 31.49, tThis = W('this') ?? 33.41, tSkip = W('skip') ?? 34.36;
+  panel('panel-feed', tAnd5 - 0.05, tSkip - 0.5, 'full', `
+    <div class="feedlbl">Recruiter's feed</div>
+    <div class="feedwin"><div class="feedmask"><div class="feed" id="fd">${Array.from({ length: N }, (_, i) => i === HIT
+      ? `<div class="fc hit" style="height:200px"><div class="av"></div><div>${bars([46], 'dark')}<div class="bt">Grew followers by <span class="slot" id="fd-slot">X%</span></div></div></div>`
+      : `<div class="fc" style="height:${FH[i]}px"><div class="av"></div><div>${bars([40 + (i * 23) % 35], 'dark')}${bars([85 - (i * 17) % 30, 60 - (i * 11) % 25].slice(0, FH[i] > 215 ? 2 : 1))}</div></div>`).join('')}</div></div>
+      <div class="hitring hid" id="fd-ring" style="top:450px"></div></div>`);
+  tl.set('#panel-numbers', { autoAlpha: 0 }, tAnd5 + 0.3);
+  tl.fromTo('#fd', { y: 0, filter: 'blur(20px)' }, { y: 460 - HIT_Y, filter: 'blur(0px)', duration: tStop - tAnd5, ease: 'power2.inOut', immediateRender: false }, tAnd5);
+  OM.sfx('whoosh', tAnd5, { gain: 0.6 });
+  show('#fd-ring', tStop, { scale: 1.12 }, 0.35, 'expo.out'); OM.sfx('thud', tStop, { gain: 0.65 });
+  tl.fromTo('#fd-slot', { scale: 1 }, { scale: 1.25, duration: 0.25, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, tThis);
+  OM.sfx('pop', tThis, { gain: 0.5, note: 4 });
+
+  // rows 21–26 · FIX 03 label on "skip" → fancy template on "fancy" → icons / table / 2-column → confuses → 1 column, clear heading, normal font
+  const tFancy = W('fancy') ?? 35.25, tIcon = W('icon') ?? 36.64, tTable = W('table') ?? 37.11, tCol = W('2-column') ?? 38.25, tConf = W('confuses') ?? 38.7;
+  const tOne = W('column') ?? 40.93, tClear = W('clear') ?? 42.36, tNormal = W('normal') ?? 44.0, tThis2 = W('this', 2) ?? 45.02;
+  panel('panel-template', tSkip - 0.5, tThis2, 'split', `
+    <div style="position:absolute;left:110px;top:34px"><span class="fixtag hid" id="sp-fix">FIX 03</span></div>
+    <div style="position:absolute;right:110px;top:40px">${pill('red', 'cross', 'Fancy template', 'id="sp-x"')}</div>
+    <div class="doc fancy hid" id="sp-fancy" style="left:110px;top:130px;width:860px;height:810px">
+      <div class="side" id="sp-side"><div class="av"></div>${bars([82, 58], 'w')}
+        <div class="icons" id="sp-icons"><span>${SVG.phone}</span><span>${SVG.mail}</span><span>${SVG.pin}</span></div>
+        ${[86, 64, 74].map((w) => `${bars([45], 'w')}<div class="meter"><b style="width:${w}%"></b></div>`).join('')}</div>
+      <div class="main" id="sp-main"><div class="mh">ABOUT ME</div>${bars([92, 84, 66])}<div class="mh">EXPERIENCE</div>
+        <div class="tbl" id="sp-tbl">${'<div></div>'.repeat(9)}</div>${bars([88, 72, 80])}</div></div>
+    <div class="doc clean hid" id="sp-clean" style="left:110px;top:130px;width:860px;height:810px">
+      <div class="cn">Your Name</div>${bars([44])}
+      <div class="hd">EXPERIENCE</div>${bars([94, 86, 72])}<div class="hd">SKILLS</div>${bars([80, 64])}<div class="hd">EDUCATION</div>${bars([70])}</div>
+    <div class="hdr" style="top:922px">${pill('red', 'cross', 'ATS can’t read it', 'id="sp-ats"')}</div>
+    <div class="chips" style="top:922px">${pill('green', 'check', '1 column', 'id="sp-c1"')}${pill('green', 'check', 'Clear headings', 'id="sp-c2"')}${pill('green', 'check', 'Normal font', 'id="sp-c3"')}</div>`,
+    { talkIn: false, talkOut: false });
+  tl.fromTo('#talkwrap', { y: TALK_Y }, { y: TALK_Y, duration: 0.01, immediateRender: false }, tSkip - 0.5);
+  show('#sp-fix', tSkip, { x: -30, scale: 1 }, 0.35, 'expo.out'); OM.sfx('impact', tSkip, { gain: 0.4 });
+  show('#sp-fancy', tFancy - 0.2, { y: 60, scale: 0.94, rotation: 3 }, 0.4, 'expo.out');
+  show('#sp-x', tFancy + 0.3); OM.sfx('pop', tFancy + 0.35, { gain: 0.45, note: -2 });
+  tl.fromTo('#sp-icons span', { autoAlpha: 1, scale: 1, rotation: 0, y: 0 }, { autoAlpha: 0, scale: 0.2, rotation: 90, y: -60, duration: 0.3, stagger: 0.07, ease: 'back.in(2)', immediateRender: false }, tIcon);
+  OM.sfx('whip', tIcon, { gain: 0.35 });
+  tl.fromTo('#sp-tbl div', { autoAlpha: 1, scale: 1 }, { autoAlpha: 0, scale: 0.4, duration: 0.28, stagger: { each: 0.025, from: 'random' }, immediateRender: false }, tTable);
+  OM.sfx('glitch', tTable, { gain: 0.3 });
+  tl.fromTo('#sp-side', { scaleX: 1 }, { scaleX: 0, duration: 0.4, ease: 'expo.inOut', immediateRender: false }, tCol)
+    .fromTo('#sp-main', { x: 0 }, { x: -150, duration: 0.4, ease: 'expo.inOut', immediateRender: false }, tCol);
+  OM.sfx('whoosh', tCol, { gain: 0.35 });
+  show('#sp-ats', tConf); shake('#sp-fancy', tConf); OM.sfx('glitch', tConf, { gain: 0.45 });
+  tl.fromTo(['#sp-fancy', '#sp-x', '#sp-ats'], { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.2, immediateRender: false }, tOne - 0.25);
+  show('#sp-clean', tOne - 0.2, { scale: 0.94, y: 30 }, 0.35, 'expo.out'); show('#sp-c1', tOne); OM.sfx('ding', tOne, { gain: 0.5, note: 1 });
+  tl.fromTo('#sp-clean .hd', { color: '#f3f5f9', borderBottomColor: '#ffffff1a' }, { color: '#ffc94d', borderBottomColor: '#f5a524', duration: 0.3, stagger: 0.08, immediateRender: false }, tClear);
+  show('#sp-c2', tClear); OM.sfx('ding', tClear, { gain: 0.5, note: 3 });
+  show('#sp-c3', tNormal); OM.sfx('ding', tNormal, { gain: 0.5, note: 5 });
+
+  // rows 27–28 · "so fix these 3 things" ticks on "3" / "things"; "and watch your call goes up" draws the line to "up"
+  const t3 = W('3', 1) ?? 47.36, tThings = W('things') ?? 47.58, tWatch = W('watch') ?? 48.31, tUp = W('up') ?? 49.52, tComment = W('comment') ?? 49.95;
+  panel('panel-recap', tThis2, tComment - 0.05, 'split', `
+    <div class="doc" id="rc-doc" style="left:110px;top:60px;width:860px;height:470px;padding:30px 44px">
+      ${[['search', 'Right keywords'], ['chart', 'Add numbers'], ['layers', 'Simple layout']].map(([ic, t], i) =>
+        `<div class="rrow"><div class="ic">${SVG[ic]}</div>${t}<span class="tk hid" id="rc-t${i}">${SVG.check}</span></div>`).join('')}</div>
+    <div class="doc gdoc hid" id="rc-graph" style="left:110px;top:570px;width:860px;height:370px">
+      <div class="ct">Callbacks</div>
+      <svg viewBox="0 0 780 190"><path id="rc-line" d="M 6 182 C 180 178, 300 168, 420 128 S 640 30, 772 10" fill="none" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+        <circle id="rc-dot" cx="772" cy="10" r="14" fill="#22c55e"/></svg></div>`, { talkIn: false });
+  [t3, tThings, tThings + 0.24].forEach((t, i) => { show(`#rc-t${i}`, t); OM.sfx('ding', t, { gain: 0.45, note: i * 2 }); });
+  show('#rc-graph', tWatch - 0.15, { y: 60, scale: 0.95 }, 0.4, 'expo.out');
+  const lineLen = $('#rc-line').getTotalLength();
+  $('#rc-line').style.strokeDasharray = lineLen; $('#rc-line').style.strokeDashoffset = lineLen;
+  tl.fromTo('#rc-line', { strokeDashoffset: lineLen }, { strokeDashoffset: 0, duration: tUp - tWatch, ease: 'power2.in', immediateRender: false }, tWatch);
+  tl.fromTo('#rc-dot', { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: 0.3, ease: 'back.out(3)', immediateRender: false }, tUp);
+  OM.sfx('riser', tWatch, { dur: tUp - tWatch, gain: 0.3 }); OM.sfx('sparkle', tUp, { gain: 0.5 });
+
+  // ---- the talk: jump cuts become wide ↔ tight punch-ins, but never while the screen is split ----
+  const SPLITS = PANELS.filter((p) => p.kind === 'split').map((p) => [p.start, p.end]);
+  const inSplit = (t) => SPLITS.some(([a, b]) => t >= a - 0.06 && t < b);
+  let tight = false;
+  const shots = D.cuts.map((c) => { tight = c.newClip ? false : !tight; return { t: c.t, s: tight ? TIGHT : 1, newClip: c.newClip }; });
+  const scaleAt = (t) => shots.filter((x) => x.t <= t + 1e-6).reduce((s, x) => x.s, 1);
+  [...new Set([...shots.map((x) => x.t), ...SPLITS.flat()])].sort((a, b) => a - b)
+    .forEach((t) => set('#talk', t, { scale: inSplit(t) ? 1 : scaleAt(t) }));
+  shots.forEach((x, i) => {
+    if (!x.newClip || i === 0 || inSplit(x.t) || PANELS.some((p) => p.kind === 'full' && x.t >= p.start && x.t < p.end)) return;
+    tl.fromTo('#talk', { scale: 1.14 }, { scale: 1, duration: 0.5, immediateRender: false }, x.t);
+    OM.sfx('whoosh', x.t, { gain: 0.5 });
+  });
+
+  // comment bar types the keyword
+  const tCmt = cue('comment') ?? 49.95;
+  cardIn('#comment', tCmt - 0.12, TALK_END + 0.05, 'pop');
+  OM.sfx('type', W('resume', 4) ?? 50.32, { dur: 0.5, gain: 0.35 });
+
+  // ---- captions: word by word, key word on the blue block ------------------------------------
+  const capsRoot = $('#caps');
+  const inBroll = (t0, t1, kind) => PANELS.some((b) => b.kind === kind && t0 < b.end - 0.1 && t1 > b.start + 0.1);
+  D.captions.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = 'cap';
+    el.dataset.omId = `caption-${i + 1}`;
+    const y = inBroll(c.start, c.end, 'full') ? Number(V.capYFull) : inBroll(c.start, c.end, 'split') ? SEAM - 58 : Number(V.capY);
+    el.style.top = y + 'px';
+    el.style.transform = 'translateY(-50%)';
+    el.style.fontSize = V.capSize + 'px';
+    // *key* markup → words
+    let key = false;
+    const toks = c.text.split(/\s+/).map((raw) => {
+      let w = raw, k = key;
+      if (w.startsWith('*')) { k = key = true; w = w.slice(1); }
+      const m = w.match(/\*([.,!?:;"'”)]*)$/);
+      if (m) { w = w.slice(0, m.index) + m[1]; key = false; }
+      return { w, k };
+    });
+    const units = [];                                    // a key phrase is one unit, timed by its first word
+    toks.forEach((t, j) => {
+      const last = units[units.length - 1];
+      if (t.k && last && last.k) last.w += ' ' + t.w; else units.push({ ...t, at: c.times[j] ?? c.start + j * 0.22 });
+    });
+    el.innerHTML = units.map((t) => t.k
+      ? `<span class="w key"><span class="blk"></span><span class="t">${t.w}</span></span>`
+      : `<span class="w">${t.w}</span>`).join(' ');
+    capsRoot.appendChild(el);
+    const spans = el.querySelectorAll('.w');
+    tl.set(el, { opacity: 1 }, c.start).set(el, { opacity: 0 }, Math.min(c.end, TALK_END));
+    spans.forEach((sp, j) => {
+      const at = units[j].at;
+      if (sp.classList.contains('key')) {
+        tl.fromTo(sp, { opacity: 0, scale: 1.35, rotation: -3 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.42, ease: 'back.out(2.2)', immediateRender: false }, at)
+          .fromTo($('.blk', sp), { scaleX: 0 }, { scaleX: 1, duration: 0.32, immediateRender: false }, at + 0.02);
+      } else {
+        tl.fromTo(sp, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.24, ease: 'power3.out', immediateRender: false }, at);
+      }
+    });
+    if (el.querySelector('.key')) OM.sfx('tick', c.times[toks.findIndex((t) => t.k)] ?? c.start, { gain: 0.25 });
+  });
+
+  // ---- end card ----------------------------------------------------------------------------
+  const END = TALK_END;
+  tl.addLabel('scene:end', END);
+  tl.fromTo('#endcard', { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out', immediateRender: false }, END)
+    .fromTo('#endcard .big', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, immediateRender: false }, END + 0.1)
+    .fromTo('#endcard .kw', { opacity: 0, scale: 1.4, rotation: -4 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.6, ease: 'back.out(2)', immediateRender: false }, END + 0.4)
+    .fromTo('#endcard .kw .blk', { scaleX: 0 }, { scaleX: 1, duration: 0.4, immediateRender: false }, END + 0.42)
+    .fromTo('#endcard .line', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, immediateRender: false }, END + 0.9);
+  // the end card holds as a poster: a slow push, the keyword block breathing
+  const HOLD = Number(V.endHold) || 3.4;
+  tl.fromTo('#endcard .big, #endcard .line', { scale: 1 }, { scale: 1.06, duration: HOLD - 0.4, ease: 'none', immediateRender: false }, END + 0.4)
+    .fromTo('#endcard .kw .t', { scale: 1 }, { scale: 1.08, duration: HOLD - 1, ease: 'sine.inOut', immediateRender: false }, END + 1)
+    .fromTo('#endcard .kw .blk', { scaleY: 1 }, { scaleY: 1.12, duration: (HOLD - 1) / 2, ease: 'sine.inOut', yoyo: true, repeat: 1, immediateRender: false }, END + 1);
+  OM.sfx('riser', END, { dur: 0.4, gain: 0.4 });
+  OM.sfx('impact', END + 0.42, { gain: 0.6 });
+  OM.sfx('chime', END + 0.95, { gain: 0.5 });
+  tl.to({}, { duration: Number(V.endHold) || 3.4 }, END);
+
+  (window.__timelines = window.__timelines || {})['film'] = tl;
+</script>
+</body>
+</html>

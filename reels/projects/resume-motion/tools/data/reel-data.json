@@ -1,0 +1,478 @@
+{
+ "captions": [
+  {
+   "text": "If you have applied to *thousands* of jobs",
+   "start": 0.05,
+   "times": [
+    0.05,
+    0.29,
+    0.46,
+    0.65,
+    1.08,
+    1.2,
+    1.65,
+    1.74
+   ],
+   "end": 2.14
+  },
+  {
+   "text": "and *nobody* is calling you back,",
+   "start": 2.16,
+   "times": [
+    2.16,
+    2.94,
+    3.29,
+    3.41,
+    3.69,
+    3.81
+   ],
+   "end": 4.42
+  },
+  {
+   "text": "it's not the *job market,*",
+   "start": 4.44,
+   "times": [
+    4.44,
+    4.69,
+    4.92,
+    5.02,
+    5.25
+   ],
+   "end": 5.91
+  },
+  {
+   "text": "it's your *resume.*",
+   "start": 5.93,
+   "times": [
+    5.93,
+    6.26,
+    6.55
+   ],
+   "end": 7.4
+  },
+  {
+   "text": "So the fix *number 1*",
+   "start": 7.42,
+   "times": [
+    7.42,
+    7.55,
+    7.64,
+    8.0,
+    8.32
+   ],
+   "end": 8.53
+  },
+  {
+   "text": "is use the *right word.*",
+   "start": 8.55,
+   "times": [
+    8.55,
+    9.1,
+    9.44,
+    9.53,
+    9.95
+   ],
+   "end": 10.45
+  },
+  {
+   "text": "And in order to do that,",
+   "start": 10.47,
+   "times": [
+    10.47,
+    10.87,
+    11.0,
+    11.23,
+    11.32,
+    11.52
+   ],
+   "end": 11.79
+  },
+  {
+   "text": "you have to pick out the *skill.*",
+   "start": 11.81,
+   "times": [
+    11.81,
+    11.92,
+    12.2,
+    12.33,
+    12.55,
+    12.73,
+    12.82
+   ],
+   "end": 13.63
+  },
+  {
+   "text": "If they use the word *data analysis*",
+   "start": 13.65,
+   "times": [
+    13.65,
+    13.8,
+    13.95,
+    14.27,
+    14.36,
+    14.64,
+    14.87
+   ],
+   "end": 15.64
+  },
+  {
+   "text": "and in your resume you, you write",
+   "start": 15.66,
+   "times": [
+    15.66,
+    15.98,
+    16.12,
+    16.31,
+    16.69,
+    17.28,
+    18.13
+   ],
+   "end": 18.97
+  },
+  {
+   "text": "*good with numbers,*",
+   "start": 18.99,
+   "times": [
+    18.99,
+    19.17,
+    19.34
+   ],
+   "end": 20.07
+  },
+  {
+   "text": "then your resume is *rejected.*",
+   "start": 20.09,
+   "times": [
+    20.09,
+    20.41,
+    20.6,
+    20.9,
+    21.1
+   ],
+   "end": 21.76
+  },
+  {
+   "text": "And the fix *number 2*",
+   "start": 21.78,
+   "times": [
+    21.78,
+    22.09,
+    22.15,
+    22.45,
+    22.7
+   ],
+   "end": 22.9
+  },
+  {
+   "text": "is *add numbers.*",
+   "start": 22.92,
+   "times": [
+    22.92,
+    23.45,
+    23.71
+   ],
+   "end": 24.61
+  },
+  {
+   "text": "Don't just say what you did,",
+   "start": 24.63,
+   "times": [
+    24.63,
+    25.03,
+    25.32,
+    25.5,
+    25.82,
+    25.94
+   ],
+   "end": 26.62
+  },
+  {
+   "text": "just add the *number*",
+   "start": 26.64,
+   "times": [
+    26.64,
+    26.89,
+    27.06,
+    27.12
+   ],
+   "end": 27.43
+  },
+  {
+   "text": "of what you have *changed*",
+   "start": 27.45,
+   "times": [
+    27.45,
+    27.57,
+    27.76,
+    27.85,
+    28.17
+   ],
+   "end": 28.7
+  },
+  {
+   "text": "because of you,",
+   "start": 28.72,
+   "times": [
+    28.72,
+    29.2,
+    29.39
+   ],
+   "end": 30.06
+  },
+  {
+   "text": "and recruiter would *stop scrolling*",
+   "start": 30.08,
+   "times": [
+    30.08,
+    30.34,
+    30.73,
+    31.45,
+    31.89
+   ],
+   "end": 32.8
+  },
+  {
+   "text": "if you add this",
+   "start": 32.82,
+   "times": [
+    32.82,
+    32.94,
+    33.07,
+    33.37
+   ],
+   "end": 33.86
+  },
+  {
+   "text": "and skip the *fancy template,*",
+   "start": 33.88,
+   "times": [
+    33.88,
+    34.32,
+    35.01,
+    35.21,
+    35.76
+   ],
+   "end": 36.58
+  },
+  {
+   "text": "icon table, and *2-column*",
+   "start": 36.6,
+   "times": [
+    36.6,
+    37.07,
+    37.87,
+    38.21
+   ],
+   "end": 38.64
+  },
+  {
+   "text": "*confuses* the recruiters.",
+   "start": 38.66,
+   "times": [
+    38.66,
+    39.38,
+    39.5
+   ],
+   "end": 40.02
+  },
+  {
+   "text": "Just only *1 column*",
+   "start": 40.04,
+   "times": [
+    40.04,
+    40.28,
+    40.47,
+    40.89
+   ],
+   "end": 41.61
+  },
+  {
+   "text": "and *clear heading*",
+   "start": 41.63,
+   "times": [
+    41.63,
+    42.32,
+    42.63
+   ],
+   "end": 43.14
+  },
+  {
+   "text": "and *normal font.*",
+   "start": 43.16,
+   "times": [
+    43.16,
+    43.96,
+    44.37
+   ],
+   "end": 44.96
+  },
+  {
+   "text": "This thing so fix these *3 things*",
+   "start": 44.98,
+   "times": [
+    44.98,
+    45.3,
+    46.15,
+    46.44,
+    46.89,
+    47.32,
+    47.54
+   ],
+   "end": 47.89
+  },
+  {
+   "text": "and watch your *call goes up.*",
+   "start": 47.91,
+   "times": [
+    47.91,
+    48.27,
+    48.63,
+    48.75,
+    49.07,
+    49.48
+   ],
+   "end": 49.89
+  },
+  {
+   "text": "Comment *RESUME*",
+   "start": 49.91,
+   "times": [
+    49.91,
+    50.28
+   ],
+   "end": 51.02
+  },
+  {
+   "text": "so that you can know",
+   "start": 51.04,
+   "times": [
+    51.04,
+    51.2,
+    51.39,
+    51.49,
+    51.92
+   ],
+   "end": 52.56
+  },
+  {
+   "text": "what kind of resume you will share.",
+   "start": 52.58,
+   "times": [
+    52.58,
+    52.68,
+    52.93,
+    53.03,
+    54.22,
+    54.39,
+    54.51
+   ],
+   "end": 55.1
+  }
+ ],
+ "cuts": [
+  {
+   "t": 0.0,
+   "newClip": true
+  },
+  {
+   "t": 2.95,
+   "newClip": false
+  },
+  {
+   "t": 5.9,
+   "newClip": false
+  },
+  {
+   "t": 7.34,
+   "newClip": true
+  },
+  {
+   "t": 9.02,
+   "newClip": false
+  },
+  {
+   "t": 10.46,
+   "newClip": false
+  },
+  {
+   "t": 13.56,
+   "newClip": false
+  },
+  {
+   "t": 15.67,
+   "newClip": false
+  },
+  {
+   "t": 17.98,
+   "newClip": false
+  },
+  {
+   "t": 18.9,
+   "newClip": false
+  },
+  {
+   "t": 21.82,
+   "newClip": true
+  },
+  {
+   "t": 23.34,
+   "newClip": false
+  },
+  {
+   "t": 24.46,
+   "newClip": false
+  },
+  {
+   "t": 26.48,
+   "newClip": false
+  },
+  {
+   "t": 29.94,
+   "newClip": false
+  },
+  {
+   "t": 31.29,
+   "newClip": false
+  },
+  {
+   "t": 33.74,
+   "newClip": true
+  },
+  {
+   "t": 36.44,
+   "newClip": false
+  },
+  {
+   "t": 37.72,
+   "newClip": false
+  },
+  {
+   "t": 39.97,
+   "newClip": false
+  },
+  {
+   "t": 41.48,
+   "newClip": false
+  },
+  {
+   "t": 44.8,
+   "newClip": false
+  },
+  {
+   "t": 45.98,
+   "newClip": true
+  },
+  {
+   "t": 47.81,
+   "newClip": false
+  },
+  {
+   "t": 49.74,
+   "newClip": false
+  },
+  {
+   "t": 52.47,
+   "newClip": false
+  }
+ ]
+}

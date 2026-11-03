@@ -1,0 +1,10 @@
+# media and renders stay out of git (rebuild: reels/tools/aroll.py → assets/talk.mp4, om sound, om render)
+assets/talk.mp4
+assets/voice.wav
+assets/sound.wav
+out/
+.om/
+assets/talk-room.mp4
+assets/talk-dark.mp4
+assets/talk-depth.mp4
+assets/talk-teal.mp4
