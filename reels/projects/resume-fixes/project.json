@@ -1,0 +1,1045 @@
+{
+ "title": "Resume fixes",
+ "theme": "bold",
+ "captionStyle": {
+  "weight": 700,
+  "key": "color",
+  "size": 64,
+  "stroke": 12,
+  "y": 1470
+ },
+ "handle": "",
+ "music": "lofi",
+ "watermark": false,
+ "aroll": {
+  "offset": 0
+ },
+ "scenes": [
+  {
+   "dur": 2.95,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "elements": [],
+   "sfx": [
+    [
+     0.15,
+     "pop",
+     1.1
+    ]
+   ]
+  },
+  {
+   "dur": 2.95,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  },
+  {
+   "dur": 1.44,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 1.68,
+   "bg": "white",
+   "in": "zoom",
+   "focus": {
+    "x": 540,
+    "y": 560
+   },
+   "elements": [
+    {
+     "type": "photo",
+     "media": "aroll",
+     "at": 0.05,
+     "x": 540,
+     "y": 900,
+     "w": 800,
+     "h": 1220,
+     "tilt": -0.045,
+     "focusY": 0.25,
+     "breathe": 0.05
+    },
+    {
+     "type": "pills",
+     "items": [
+      "FIX #1"
+     ],
+     "style": "filled",
+     "y": 250,
+     "size": 60,
+     "at": 0.15
+    }
+   ],
+   "sfx": [
+    [
+     0.05,
+     "pop",
+     0.9
+    ]
+   ]
+  },
+  {
+   "dur": 1.44,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "in": "morph"
+  },
+  {
+   "dur": 3.1,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 2.11,
+   "bg": "aroll",
+   "in": "morph",
+   "sfx": [],
+   "frame": "wide",
+   "focusY": 0.2
+  },
+  {
+   "dur": 2.31,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "in": "morph"
+  },
+  {
+   "dur": 0.92,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  },
+  {
+   "dur": 2.92,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 1.52,
+   "bg": "white",
+   "in": "zoom",
+   "focus": {
+    "x": 540,
+    "y": 560
+   },
+   "elements": [
+    {
+     "type": "photo",
+     "media": "aroll",
+     "at": 0.05,
+     "x": 540,
+     "y": 900,
+     "w": 800,
+     "h": 1220,
+     "tilt": 0.045,
+     "focusY": 0.25,
+     "breathe": 0.05
+    },
+    {
+     "type": "pills",
+     "items": [
+      "FIX #2"
+     ],
+     "style": "filled",
+     "y": 250,
+     "size": 60,
+     "at": 0.15
+    }
+   ],
+   "sfx": [
+    [
+     0.05,
+     "pop",
+     0.9
+    ]
+   ]
+  },
+  {
+   "dur": 1.12,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "in": "morph"
+  },
+  {
+   "dur": 2.02,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 3.46,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  },
+  {
+   "dur": 1.35,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 2.45,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  },
+  {
+   "dur": 1.4,
+   "bg": "white",
+   "in": "zoom",
+   "focus": {
+    "x": 540,
+    "y": 560
+   },
+   "elements": [
+    {
+     "type": "photo",
+     "media": "aroll",
+     "at": 0.05,
+     "x": 540,
+     "y": 900,
+     "w": 800,
+     "h": 1220,
+     "tilt": 0.045,
+     "focusY": 0.25,
+     "breathe": 0.05
+    },
+    {
+     "type": "pills",
+     "items": [
+      "FIX #3"
+     ],
+     "style": "filled",
+     "y": 250,
+     "size": 60,
+     "at": 0.15
+    }
+   ],
+   "sfx": [
+    [
+     0.05,
+     "pop",
+     0.9
+    ]
+   ]
+  },
+  {
+   "dur": 1.3,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "in": "morph"
+  },
+  {
+   "dur": 1.28,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  },
+  {
+   "dur": 2.25,
+   "bg": "aroll",
+   "in": "morph",
+   "sfx": [],
+   "frame": "wide",
+   "focusY": 0.2
+  },
+  {
+   "dur": 1.51,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "in": "morph"
+  },
+  {
+   "dur": 3.32,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 1.18,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  },
+  {
+   "dur": 1.83,
+   "bg": "white",
+   "in": "zoom",
+   "focus": {
+    "x": 540,
+    "y": 560
+   },
+   "elements": [
+    {
+     "type": "photo",
+     "media": "aroll",
+     "at": 0.05,
+     "x": 540,
+     "y": 900,
+     "w": 800,
+     "h": 1220,
+     "tilt": -0.045,
+     "focusY": 0.25,
+     "breathe": 0.05
+    },
+    {
+     "type": "pills",
+     "items": [
+      "3 FIXES"
+     ],
+     "style": "filled",
+     "y": 250,
+     "size": 60,
+     "at": 0.15
+    }
+   ],
+   "sfx": [
+    [
+     0.05,
+     "pop",
+     0.9
+    ]
+   ]
+  },
+  {
+   "dur": 1.93,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "in": "morph"
+  },
+  {
+   "dur": 2.73,
+   "bg": "aroll",
+   "frame": "wide",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     false
+    ]
+   ]
+  },
+  {
+   "dur": 2.55,
+   "bg": "aroll",
+   "frame": "tight",
+   "focusY": 0.2,
+   "sfx": [
+    [
+     -0.06,
+     "whoosh",
+     0.22,
+     true
+    ]
+   ]
+  }
+ ],
+ "end": {
+  "keyword": "RESUME",
+  "text": "Comment",
+  "tagline": "Follow for more resume tips",
+  "flash": false
+ },
+ "captions": [
+  {
+   "text": "If you have applied to *thousands* of jobs",
+   "start": 0.04,
+   "times": [
+    0.04,
+    0.28,
+    0.45,
+    0.64,
+    1.07,
+    1.19,
+    1.64,
+    1.73
+   ],
+   "end": 2.13
+  },
+  {
+   "text": "and *nobody* is calling you back,",
+   "start": 2.15,
+   "times": [
+    2.15,
+    2.93,
+    3.28,
+    3.4,
+    3.68,
+    3.8
+   ],
+   "end": 4.41
+  },
+  {
+   "text": "it's not the *job market,*",
+   "start": 4.43,
+   "times": [
+    4.43,
+    4.68,
+    4.91,
+    5.01,
+    5.24
+   ],
+   "end": 5.9
+  },
+  {
+   "text": "it's your *resume.*",
+   "start": 5.92,
+   "times": [
+    5.92,
+    6.25,
+    6.54
+   ],
+   "end": 7.39
+  },
+  {
+   "text": "So the fix *number 1*",
+   "start": 7.41,
+   "times": [
+    7.41,
+    7.54,
+    7.63,
+    7.99,
+    8.31
+   ],
+   "end": 8.52
+  },
+  {
+   "text": "is use the *right word.*",
+   "start": 8.54,
+   "times": [
+    8.54,
+    9.09,
+    9.43,
+    9.52,
+    9.94
+   ],
+   "end": 10.44
+  },
+  {
+   "text": "And in order to do that,",
+   "start": 10.46,
+   "times": [
+    10.46,
+    10.86,
+    10.99,
+    11.22,
+    11.31,
+    11.51
+   ],
+   "end": 11.78
+  },
+  {
+   "text": "you have to pick out the *skill.*",
+   "start": 11.8,
+   "times": [
+    11.8,
+    11.91,
+    12.19,
+    12.32,
+    12.54,
+    12.72,
+    12.81
+   ],
+   "end": 13.62
+  },
+  {
+   "text": "If they use the word *data analysis*",
+   "start": 13.64,
+   "times": [
+    13.64,
+    13.79,
+    13.94,
+    14.26,
+    14.35,
+    14.63,
+    14.86
+   ],
+   "end": 15.63
+  },
+  {
+   "text": "and in your resume you, you write",
+   "start": 15.65,
+   "times": [
+    15.65,
+    15.97,
+    16.11,
+    16.3,
+    16.68,
+    17.27,
+    18.12
+   ],
+   "end": 18.96
+  },
+  {
+   "text": "*good with numbers,*",
+   "start": 18.98,
+   "times": [
+    18.98,
+    19.16,
+    19.33
+   ],
+   "end": 20.06
+  },
+  {
+   "text": "then your resume is *rejected.*",
+   "start": 20.08,
+   "times": [
+    20.08,
+    20.4,
+    20.59,
+    20.89,
+    21.09
+   ],
+   "end": 21.75
+  },
+  {
+   "text": "And the fix *number 2*",
+   "start": 21.77,
+   "times": [
+    21.77,
+    22.08,
+    22.14,
+    22.44,
+    22.69
+   ],
+   "end": 22.89
+  },
+  {
+   "text": "is *add numbers.*",
+   "start": 22.91,
+   "times": [
+    22.91,
+    23.44,
+    23.7
+   ],
+   "end": 24.6
+  },
+  {
+   "text": "Don't just say what you did,",
+   "start": 24.62,
+   "times": [
+    24.62,
+    25.02,
+    25.31,
+    25.49,
+    25.81,
+    25.93
+   ],
+   "end": 26.61
+  },
+  {
+   "text": "just add the *number*",
+   "start": 26.63,
+   "times": [
+    26.63,
+    26.88,
+    27.05,
+    27.11
+   ],
+   "end": 27.42
+  },
+  {
+   "text": "of what you have *changed*",
+   "start": 27.44,
+   "times": [
+    27.44,
+    27.56,
+    27.75,
+    27.84,
+    28.16
+   ],
+   "end": 28.69
+  },
+  {
+   "text": "because of you,",
+   "start": 28.71,
+   "times": [
+    28.71,
+    29.19,
+    29.38
+   ],
+   "end": 30.05
+  },
+  {
+   "text": "and recruiter would *stop scrolling*",
+   "start": 30.07,
+   "times": [
+    30.07,
+    30.33,
+    30.72,
+    31.44,
+    31.88
+   ],
+   "end": 32.79
+  },
+  {
+   "text": "if you add this",
+   "start": 32.81,
+   "times": [
+    32.81,
+    32.93,
+    33.06,
+    33.36
+   ],
+   "end": 33.85
+  },
+  {
+   "text": "and skip the *fancy template,*",
+   "start": 33.87,
+   "times": [
+    33.87,
+    34.31,
+    35.0,
+    35.2,
+    35.75
+   ],
+   "end": 36.57
+  },
+  {
+   "text": "icon table, and *2-column*",
+   "start": 36.59,
+   "times": [
+    36.59,
+    37.06,
+    37.86,
+    38.2
+   ],
+   "end": 38.63
+  },
+  {
+   "text": "*confuses* the recruiters.",
+   "start": 38.65,
+   "times": [
+    38.65,
+    39.37,
+    39.49
+   ],
+   "end": 40.01
+  },
+  {
+   "text": "Just only *1 column*",
+   "start": 40.03,
+   "times": [
+    40.03,
+    40.27,
+    40.46,
+    40.88
+   ],
+   "end": 41.6
+  },
+  {
+   "text": "and *clear heading*",
+   "start": 41.62,
+   "times": [
+    41.62,
+    42.31,
+    42.62
+   ],
+   "end": 43.13
+  },
+  {
+   "text": "and *normal font.*",
+   "start": 43.15,
+   "times": [
+    43.15,
+    43.95,
+    44.36
+   ],
+   "end": 44.95
+  },
+  {
+   "text": "This thing so fix these *3 things*",
+   "start": 44.97,
+   "times": [
+    44.97,
+    45.29,
+    46.14,
+    46.43,
+    46.88,
+    47.31,
+    47.53
+   ],
+   "end": 47.88
+  },
+  {
+   "text": "and watch your call *goes up.*",
+   "start": 47.9,
+   "times": [
+    47.9,
+    48.26,
+    48.62,
+    48.74,
+    49.06,
+    49.47
+   ],
+   "end": 49.88
+  },
+  {
+   "text": "Comment *RESUME*",
+   "start": 49.9,
+   "times": [
+    49.9,
+    50.27
+   ],
+   "end": 51.01
+  },
+  {
+   "text": "so that you can know",
+   "start": 51.03,
+   "times": [
+    51.03,
+    51.19,
+    51.38,
+    51.48,
+    51.91
+   ],
+   "end": 52.55
+  },
+  {
+   "text": "what kind of resume you will share.",
+   "start": 52.57,
+   "times": [
+    52.57,
+    52.67,
+    52.92,
+    53.02,
+    54.21,
+    54.38,
+    54.5
+   ],
+   "end": 55.0
+  }
+ ],
+ "overlays": [
+  {
+   "start": 1.0,
+   "end": 4.45,
+   "elements": [
+    {
+     "type": "stat",
+     "label": "Applications sent",
+     "value": 1000,
+     "suffix": "+",
+     "at": 0.24,
+     "y": 300,
+     "w": 860
+    },
+    {
+     "type": "stat",
+     "label": "Callbacks",
+     "value": 0,
+     "color": "#ff4d4d",
+     "at": 2.45,
+     "y": 450,
+     "w": 860,
+     "dur": 0.1
+    }
+   ]
+  },
+  {
+   "start": 6.2,
+   "end": 7.32,
+   "dim": 0.6,
+   "elements": [
+    {
+     "type": "doc",
+     "at": 0.1,
+     "y": 980,
+     "w": 380
+    }
+   ]
+  },
+  {
+   "start": 14.48,
+   "end": 21.78,
+   "elements": [
+    {
+     "type": "xlist",
+     "title": "Keyword match",
+     "y": 430,
+     "items": [
+      {
+       "label": "Job post asks for",
+       "text": "\"Data analysis\"",
+       "ok": true,
+       "at": 0.2
+      },
+      {
+       "label": "Your resume says",
+       "text": "\"Good with numbers\"",
+       "ok": false,
+       "at": 4.550000000000002
+      }
+     ]
+    },
+    {
+     "type": "stamp",
+     "text": "REJECTED",
+     "at": 6.660000000000001,
+     "y": 605,
+     "x": 640,
+     "size": 96,
+     "breathe": 0
+    }
+   ]
+  },
+  {
+   "start": 25.21,
+   "end": 29.95,
+   "elements": [
+    {
+     "type": "xlist",
+     "title": "Example",
+     "y": 430,
+     "items": [
+      {
+       "text": "Managed social media",
+       "ok": false,
+       "at": 0.15
+      },
+      {
+       "text": "Grew followers by 40%",
+       "ok": true,
+       "at": 1.9500000000000006
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "start": 30.279999999999998,
+   "end": 33.7,
+   "elements": [
+    {
+     "type": "feed",
+     "at": 0.1,
+     "dur": 1.4500000000000006,
+     "y": 430,
+     "h": 460,
+     "badge": "+40%"
+    }
+   ]
+  },
+  {
+   "start": 35.1,
+   "end": 39.98,
+   "elements": [
+    {
+     "type": "xlist",
+     "title": "Skip",
+     "y": 430,
+     "rowH": 84,
+     "items": [
+      {
+       "text": "Fancy template",
+       "at": 0.15,
+       "size": 42
+      },
+      {
+       "text": "Icons",
+       "at": 1.5400000000000005,
+       "size": 42
+      },
+      {
+       "text": "Tables",
+       "at": 2.0099999999999993,
+       "size": 42
+      },
+      {
+       "text": "2 columns",
+       "at": 3.15,
+       "size": 42
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "start": 40.32,
+   "end": 45.9,
+   "elements": [
+    {
+     "type": "xlist",
+     "title": "Do this",
+     "y": 430,
+     "items": [
+      {
+       "text": "1 column",
+       "ok": true,
+       "at": 0.6099999999999994
+      },
+      {
+       "text": "Clear headings",
+       "ok": true,
+       "at": 2.039999999999999
+      },
+      {
+       "text": "Normal font",
+       "ok": true,
+       "at": 3.6799999999999997
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "start": 48.11,
+   "end": 49.85,
+   "elements": [
+    {
+     "type": "panel",
+     "y": 430,
+     "w": 880,
+     "h": 420,
+     "at": 0
+    },
+    {
+     "type": "graph",
+     "label": "*Callbacks*",
+     "x": 170,
+     "y": 330,
+     "w": 740,
+     "h": 240,
+     "at": 0.1,
+     "dur": 1.3,
+     "points": [
+      0.05,
+      0.08,
+      0.06,
+      0.18,
+      0.3,
+      0.5,
+      0.72,
+      0.95
+     ],
+     "breathe": 0
+    }
+   ]
+  },
+  {
+   "start": 49.95,
+   "end": 55.0,
+   "elements": [
+    {
+     "type": "comment",
+     "keyword": "RESUME",
+     "text": "Comment",
+     "avatar": "R",
+     "at": 0.05,
+     "y": 400,
+     "light": true
+    }
+   ]
+  }
+ ]
+}
