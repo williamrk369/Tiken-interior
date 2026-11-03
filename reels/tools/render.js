@@ -52,6 +52,20 @@ const page = 'file://' + path.resolve(__dirname, '..', 'index.html');
   }, project);
   console.log(`reel: ${duration.toFixed(2)} s, ${Math.ceil(duration * fps)} frames at ${fps} fps`);
 
+  // B-roll images named in the project (element "src": path relative to the project file)
+  const srcs = new Set();
+  JSON.stringify(project, (k, v) => { if (k === 'src' && typeof v === 'string') srcs.add(v); return v; });
+  for (const src of srcs) {
+    const file = path.resolve(path.dirname(args.project), src);
+    const mime = { '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' }[path.extname(file).toLowerCase()] || 'image/png';
+    const url = `data:${mime};base64,` + fs.readFileSync(file).toString('base64');
+    await tab.evaluate(async ([name, u]) => {
+      const img = new Image(); img.src = u; await img.decode();
+      const r = window.__reel; r.images = r.images || {}; r.images[name] = img;
+    }, [src, url]);
+  }
+  if (srcs.size) console.log(`b-roll images: ${srcs.size}`);
+
   // 1. sound effects + music bed, rendered offline in the page
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'reel-'));
   let arollFrames = 0;

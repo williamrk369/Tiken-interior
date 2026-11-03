@@ -855,6 +855,45 @@
       sfx: (el) => [[el.at ?? 0.3, 'whoosh', 0.4], [(el.at ?? 0.3) + 1.2, 'pop', 1.3]],
     },
 
+    // full-screen photo B-roll: settles in from a slight zoom + blur, then slowly pushes in
+    bpic: {
+      draw(ctx, el, lt, R, sc) {
+        const k = easeOut(prog(lt, 0, 0.45)), p = clamp(lt / (sc.dur || 4));
+        const s = lerp(1.14, 1, k) * (1 + 0.04 * p);
+        ctx.save();
+        if (hasFilter && k < 0.98) ctx.filter = `blur(${((1 - k) * 18).toFixed(1)}px)`;
+        R.drawMedia(ctx, el.src, 0, 0, W, H, { scale: s, focusY: el.focusY ?? 0.5 });
+        ctx.restore();
+        const g = ctx.createLinearGradient(0, H * 0.62, 0, H);
+        g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.35)');
+        ctx.fillStyle = g; ctx.fillRect(0, H * 0.62, W, H * 0.38);
+      },
+      sfx: () => [[-0.05, 'whoosh', 0.5, true]],
+    },
+
+    // split screen: photo on top (its content area fitted in), talking head below
+    split: {
+      draw(ctx, el, lt, R, sc) {
+        const sy = el.splitY ?? 1150, p = clamp(lt / (sc.dur || 4)), k = easeOut(prog(lt, 0, 0.45));
+        // bottom: the speaker, framed on the face
+        R.drawMedia(ctx, 'aroll', 0, sy, W, H - sy, { scale: (el.faceScale ?? 1.15) * (1 + 0.03 * p), focusY: el.faceY ?? 0.34 });
+        const src = R.mediaSource(el.src);
+        ctx.save(); ctx.translate(0, -(1 - k) * sy);            // top slides down into place
+        ctx.beginPath(); ctx.rect(0, 0, W, sy); ctx.clip();
+        if (src) {
+          const iw = src.naturalWidth, ih = src.naturalHeight, ch = ih * (el.contentH ?? 0.65);
+          ctx.save(); if (hasFilter) ctx.filter = 'blur(28px) brightness(1.04)';
+          R.drawMedia(ctx, el.src, -40, -40, W + 80, sy + 80, { focusY: 0.15 }); ctx.restore();
+          const fs = Math.min(W / iw, sy / ch) * (1 + 0.035 * p), dw = iw * fs, dh = ch * fs;
+          ctx.drawImage(src, 0, 0, iw, ch, (W - dw) / 2, (sy - dh) / 2, dw, dh);
+        } else R.drawMedia(ctx, el.src, 0, 0, W, sy, {});
+        ctx.restore();
+        ctx.save(); ctx.globalAlpha *= k; ctx.fillStyle = R.T.accent; ctx.shadowColor = R.T.accent; ctx.shadowBlur = 20;
+        ctx.fillRect(0, sy - 3, W * k, 6); ctx.restore();
+      },
+      sfx: () => [[-0.05, 'whoosh', 0.45, false], [0.35, 'pop', 0.8]],
+    },
+
     // glass panel behind other elements
     panel: {
       draw(ctx, el, lt) {
@@ -1197,6 +1236,7 @@
     // ---------------------------------------------------------- media
     mediaSource(ref) {
       if (ref === 'aroll') return this.arollFrame || (this.arollEl && this.arollEl.readyState >= 2 ? this.arollEl : null);
+      if (typeof ref === 'string' && this.images && this.images[ref]) return this.images[ref];
       const m = this.media[ref];
       if (!m) return null;
       if (m.isVideo) return m.el.readyState >= 2 ? m.el : null;
@@ -1390,7 +1430,7 @@
           const E = ELEMENTS[el.type]; if (!E) continue;
           const cx = el.x ?? W / 2, cy = el.y ?? H / 2, s = 1 + (el.breathe ?? 0.03) * p;
           ctx.save(); ctx.globalAlpha = fade;
-          ctx.translate(cx, cy - 10 * p); ctx.scale(s, s); ctx.translate(-cx, -cy);
+          ctx.translate(cx, cy - (el.drift ?? 10) * p); ctx.scale(s, s); ctx.translate(-cx, -cy);
           E.draw(ctx, el, lt, this, { bg: 'aroll', dur: o.end - o.start });
           ctx.restore();
         }
