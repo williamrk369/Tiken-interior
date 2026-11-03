@@ -1,0 +1,529 @@
+{
+ "captions": [
+  {
+   "text": "If you've applied to *thousands* of jobs",
+   "start": 0.04,
+   "end": 2.13,
+   "times": [
+    0.04,
+    0.28,
+    0.64,
+    1.07,
+    1.19,
+    1.64,
+    1.73
+   ]
+  },
+  {
+   "text": "and *nobody* is calling you back,",
+   "start": 2.15,
+   "end": 4.41,
+   "times": [
+    2.15,
+    2.93,
+    3.28,
+    3.4,
+    3.68,
+    3.8
+   ]
+  },
+  {
+   "text": "it's not the *job market.*",
+   "start": 4.43,
+   "end": 5.9,
+   "times": [
+    4.43,
+    4.68,
+    4.91,
+    5.01,
+    5.24
+   ]
+  },
+  {
+   "text": "It's your *resume.*",
+   "start": 5.92,
+   "end": 7.39,
+   "times": [
+    5.92,
+    6.25,
+    6.54
+   ]
+  },
+  {
+   "text": "So, fix *number 1:*",
+   "start": 7.41,
+   "end": 9.07,
+   "times": [
+    7.41,
+    7.63,
+    7.99,
+    8.31
+   ]
+  },
+  {
+   "text": "use the *right words.*",
+   "start": 9.09,
+   "end": 11.2,
+   "times": [
+    9.09,
+    9.43,
+    9.52,
+    9.94
+   ]
+  },
+  {
+   "text": "To do that,",
+   "start": 11.22,
+   "end": 12.3,
+   "times": [
+    11.22,
+    11.31,
+    11.51
+   ]
+  },
+  {
+   "text": "pick out the *skills* they ask for.",
+   "start": 12.32,
+   "end": 13.62,
+   "times": [
+    12.32,
+    12.54,
+    12.72,
+    12.81,
+    12.9,
+    13.0,
+    13.1
+   ]
+  },
+  {
+   "text": "If the job says *\"data analysis\"*",
+   "start": 13.64,
+   "end": 15.63,
+   "times": [
+    13.64,
+    14.26,
+    14.38,
+    14.51,
+    14.63,
+    14.86
+   ]
+  },
+  {
+   "text": "and your resume says",
+   "start": 15.65,
+   "end": 18.96,
+   "times": [
+    15.65,
+    16.11,
+    16.3,
+    17.45
+   ]
+  },
+  {
+   "text": "*\"good with numbers,\"*",
+   "start": 18.98,
+   "end": 20.38,
+   "times": [
+    18.98,
+    19.16,
+    19.33
+   ]
+  },
+  {
+   "text": "your resume gets *rejected.*",
+   "start": 20.4,
+   "end": 22.12,
+   "times": [
+    20.4,
+    20.59,
+    20.84,
+    21.09
+   ]
+  },
+  {
+   "text": "Fix *number 2:*",
+   "start": 22.14,
+   "end": 23.42,
+   "times": [
+    22.14,
+    22.44,
+    22.69
+   ]
+  },
+  {
+   "text": "*add numbers.*",
+   "start": 23.44,
+   "end": 24.6,
+   "times": [
+    23.44,
+    23.7
+   ]
+  },
+  {
+   "text": "Don't just say what you did.",
+   "start": 24.62,
+   "end": 26.86,
+   "times": [
+    24.62,
+    25.02,
+    25.31,
+    25.49,
+    25.81,
+    25.93
+   ]
+  },
+  {
+   "text": "Add the *numbers*",
+   "start": 26.88,
+   "end": 27.42,
+   "times": [
+    26.88,
+    27.05,
+    27.11
+   ]
+  },
+  {
+   "text": "for what you *changed*",
+   "start": 27.44,
+   "end": 28.69,
+   "times": [
+    27.44,
+    27.56,
+    27.75,
+    28.16
+   ]
+  },
+  {
+   "text": "because of you.",
+   "start": 28.71,
+   "end": 30.31,
+   "times": [
+    28.71,
+    29.19,
+    29.38
+   ]
+  },
+  {
+   "text": "Recruiters will *stop scrolling*",
+   "start": 30.33,
+   "end": 32.79,
+   "times": [
+    30.33,
+    30.88,
+    31.44,
+    31.88
+   ]
+  },
+  {
+   "text": "when you add this.",
+   "start": 32.81,
+   "end": 33.85,
+   "times": [
+    32.81,
+    32.93,
+    33.06,
+    33.36
+   ]
+  },
+  {
+   "text": "Fix 3: skip the *fancy template.*",
+   "start": 33.87,
+   "end": 36.57,
+   "times": [
+    33.87,
+    34.02,
+    34.31,
+    35.0,
+    35.2,
+    35.75
+   ]
+  },
+  {
+   "text": "Icons, tables and *2 columns*",
+   "start": 36.59,
+   "end": 38.63,
+   "times": [
+    36.59,
+    37.06,
+    37.86,
+    38.07,
+    38.29
+   ]
+  },
+  {
+   "text": "*confuse* recruiters.",
+   "start": 38.65,
+   "end": 40.01,
+   "times": [
+    38.65,
+    39.49
+   ]
+  },
+  {
+   "text": "Use just *1 column,*",
+   "start": 40.03,
+   "end": 42.29,
+   "times": [
+    40.03,
+    40.07,
+    40.46,
+    40.88
+   ]
+  },
+  {
+   "text": "*clear headings*",
+   "start": 42.31,
+   "end": 43.13,
+   "times": [
+    42.31,
+    42.62
+   ]
+  },
+  {
+   "text": "and a *normal font.*",
+   "start": 43.15,
+   "end": 46.41,
+   "times": [
+    43.15,
+    43.55,
+    43.95,
+    44.36
+   ]
+  },
+  {
+   "text": "Fix these *3 things*",
+   "start": 46.43,
+   "end": 47.88,
+   "times": [
+    46.43,
+    46.88,
+    47.31,
+    47.53
+   ]
+  },
+  {
+   "text": "and watch your *calls go up.*",
+   "start": 47.9,
+   "end": 49.88,
+   "times": [
+    47.9,
+    48.26,
+    48.62,
+    48.74,
+    49.11,
+    49.47
+   ]
+  },
+  {
+   "text": "Comment *RESUME*",
+   "start": 49.9,
+   "end": 51.01,
+   "times": [
+    49.9,
+    50.27
+   ]
+  },
+  {
+   "text": "so you can see",
+   "start": 51.03,
+   "end": 52.55,
+   "times": [
+    51.03,
+    51.38,
+    51.48,
+    51.91
+   ]
+  },
+  {
+   "text": "the kind of resume I'll share.",
+   "start": 52.57,
+   "end": 55.0,
+   "times": [
+    52.57,
+    52.67,
+    52.92,
+    53.02,
+    53.76,
+    54.5
+   ]
+  }
+ ],
+ "broll": [
+  {
+   "kind": "full",
+   "src": "assets/broll/15.webp",
+   "start": 4.38,
+   "end": 7.32,
+   "contentH": 1
+  },
+  {
+   "kind": "full",
+   "src": "assets/broll/14.webp",
+   "start": 9.02,
+   "end": 10.51,
+   "contentH": 1
+  },
+  {
+   "kind": "full",
+   "src": "assets/broll/13.webp",
+   "start": 11.75,
+   "end": 13.59,
+   "contentH": 1
+  },
+  {
+   "kind": "full",
+   "src": "assets/broll/12.webp",
+   "start": 18.91,
+   "end": 21.78,
+   "contentH": 1
+  },
+  {
+   "kind": "full",
+   "src": "assets/broll/11.webp",
+   "start": 23.34,
+   "end": 24.57,
+   "contentH": 1
+  },
+  {
+   "kind": "split",
+   "src": "assets/broll/5.webp",
+   "start": 24.57,
+   "end": 28.71,
+   "contentH": 0.54
+  },
+  {
+   "kind": "full",
+   "src": "assets/broll/4.webp",
+   "start": 30.13,
+   "end": 33.7,
+   "contentH": 1
+  },
+  {
+   "kind": "split",
+   "src": "assets/broll/3.webp",
+   "start": 35.15,
+   "end": 40.0,
+   "contentH": 0.65
+  },
+  {
+   "kind": "split",
+   "src": "assets/broll/2.webp",
+   "start": 40.0,
+   "end": 45.0,
+   "contentH": 0.69
+  },
+  {
+   "kind": "split",
+   "src": "assets/broll/1.webp",
+   "start": 47.81,
+   "end": 51.03,
+   "contentH": 0.62
+  }
+ ],
+ "cuts": [
+  {
+   "t": 0.0,
+   "newClip": true
+  },
+  {
+   "t": 2.95,
+   "newClip": false
+  },
+  {
+   "t": 5.9,
+   "newClip": false
+  },
+  {
+   "t": 7.34,
+   "newClip": true
+  },
+  {
+   "t": 9.02,
+   "newClip": false
+  },
+  {
+   "t": 10.46,
+   "newClip": false
+  },
+  {
+   "t": 13.56,
+   "newClip": false
+  },
+  {
+   "t": 15.67,
+   "newClip": false
+  },
+  {
+   "t": 17.98,
+   "newClip": false
+  },
+  {
+   "t": 18.9,
+   "newClip": false
+  },
+  {
+   "t": 21.82,
+   "newClip": true
+  },
+  {
+   "t": 23.34,
+   "newClip": false
+  },
+  {
+   "t": 24.46,
+   "newClip": false
+  },
+  {
+   "t": 26.48,
+   "newClip": false
+  },
+  {
+   "t": 29.94,
+   "newClip": false
+  },
+  {
+   "t": 31.29,
+   "newClip": false
+  },
+  {
+   "t": 33.74,
+   "newClip": true
+  },
+  {
+   "t": 36.44,
+   "newClip": false
+  },
+  {
+   "t": 37.72,
+   "newClip": false
+  },
+  {
+   "t": 39.97,
+   "newClip": false
+  },
+  {
+   "t": 41.48,
+   "newClip": false
+  },
+  {
+   "t": 44.8,
+   "newClip": false
+  },
+  {
+   "t": 45.98,
+   "newClip": true
+  },
+  {
+   "t": 47.81,
+   "newClip": false
+  },
+  {
+   "t": 49.74,
+   "newClip": false
+  },
+  {
+   "t": 52.47,
+   "newClip": false
+  }
+ ]
+}

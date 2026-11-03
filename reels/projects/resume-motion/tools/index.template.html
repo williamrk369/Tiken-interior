@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[
+  {"id":"talk","type":"string","label":"Talking-head video","default":"assets/talk.mp4","group":"Talk"},
+  {"id":"accent","type":"color","label":"Highlight blue (from the B-roll headlines)","default":"#2563eb","group":"Colour"},
+  {"id":"good","type":"color","label":"Tick green","default":"#22c55e","group":"Colour"},
+  {"id":"bad","type":"color","label":"Cross red","default":"#ef4444","group":"Colour"},
+  {"id":"ink","type":"color","label":"Card ink","default":"#0f1115","group":"Colour"},
+  {"id":"capY","type":"number","label":"Caption line, talk shots (px from top)","default":1370,"min":900,"max":1650,"step":5,"group":"Captions"},
+  {"id":"capYFull","type":"number","label":"Caption line, full-screen photos","default":1520,"min":900,"max":1700,"step":5,"group":"Captions"},
+  {"id":"capSize","type":"number","label":"Caption size","default":66,"min":40,"max":100,"step":1,"group":"Captions"},
+  {"id":"splitY","type":"number","label":"Split-screen seam (px from top)","default":1150,"min":800,"max":1400,"step":5,"group":"Layout"},
+  {"id":"tight","type":"number","label":"Punch-in scale","default":1.32,"min":1,"max":1.8,"step":0.01,"group":"Layout"},
+  {"id":"fix1","type":"string","label":"Fix 1 card","default":"Use the right words","group":"Cards"},
+  {"id":"fix2","type":"string","label":"Fix 2 card","default":"Add numbers","group":"Cards"},
+  {"id":"fix3","type":"string","label":"Fix 3 card","default":"Skip the fancy template","group":"Cards"},
+  {"id":"fixAll","type":"string","label":"Wrap-up card","default":"Fix these 3 → more calls","group":"Cards"},
+  {"id":"keyword","type":"string","label":"Comment keyword","default":"RESUME","group":"Cards"},
+  {"id":"endLine","type":"string","label":"End card line","default":"Follow for more resume tips","group":"Cards"},
+  {"id":"endHold","type":"number","label":"End card length (s)","default":3.4,"min":1,"max":10,"step":0.1,"group":"Cards"}
+]'>
+<head>
+<meta charset="utf-8">
+<title>Resume fixes · huashu-motion</title>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/om.js"></script>
+<style id="om-fonts">
+@font-face { font-family: "Inter"; src: url("assets/fonts/Inter-var.woff") format("woff"); font-weight: 100 900; font-style: normal; }
+</style>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0b0c0f; }
+  #film { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #0b0c0f; font-family: Inter, sans-serif; color: #fff; }
+
+  /* the talk: punch-ins scale #talk, the split screen moves #talkwrap down */
+  #talkwrap { position: absolute; inset: 0; will-change: transform; transform-origin: 50% 37%; }
+  #talk { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; object-fit: cover; transform-origin: 50% 37%; }
+  #shade { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, #00000059 0%, #0000 18%, #0000 58%, #0000008c 100%); }
+
+  /* B-roll */
+  .br { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; opacity: 0; will-change: transform; }
+  .br.full { border-radius: 0; box-shadow: 0 40px 120px #000a; }
+  .br.full img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 40%; }
+  .br.split { height: var(--seam); box-shadow: 0 30px 80px #0008; background: #e9eef6; }
+  .br.split .bg { position: absolute; inset: -60px; width: calc(100% + 120px); height: calc(100% + 120px); object-fit: cover; object-position: 50% 0; filter: blur(30px) saturate(1.1); opacity: .9; }
+  .br.split .fg { position: absolute; }
+  .seam { position: absolute; left: 0; width: 1080px; height: 8px; background: var(--good); box-shadow: 0 0 28px var(--good); transform-origin: 0 50%; opacity: 0; }
+
+  /* packaging cards */
+  .card { position: absolute; opacity: 0; visibility: hidden; will-change: transform; }
+  .chapter { left: 64px; top: 236px; background: color-mix(in srgb, var(--ink) 92%, transparent); border-radius: 26px; padding: 24px 40px 28px;
+    outline: 2px solid #ffffff22; outline-offset: -2px; box-shadow: 0 24px 60px #0007; }
+  .chapter .no { font-weight: 800; font-size: 26px; letter-spacing: .3em; color: #8fb2ff; }
+  .chapter .rule { height: 6px; width: 110px; border-radius: 9px; background: var(--accent); margin: 14px 0 16px; transform-origin: 0 50%; }
+  .chapter .tt { font-weight: 850; font-size: 62px; line-height: 1.08; letter-spacing: -.01em; white-space: nowrap; }
+
+  .stat { left: 64px; display: flex; align-items: center; gap: 22px; background: #ffffffee; color: var(--ink); border-radius: 999px;
+    padding: 18px 40px 18px 22px; box-shadow: 0 18px 50px #0006; }
+  .stat .dot { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 34px; }
+  .stat .num { font-weight: 900; font-size: 64px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .stat .lbl { font-weight: 600; font-size: 34px; color: #3b4150; }
+
+  .chip { left: 64px; top: 250px; background: #ffffffee; color: var(--ink); border-radius: 30px; padding: 22px 34px; box-shadow: 0 18px 50px #0006; }
+  .chip .k { font-weight: 700; font-size: 28px; letter-spacing: .12em; color: #5b6272; text-transform: uppercase; }
+  .chip .v { display: flex; align-items: center; gap: 18px; margin-top: 8px; font-weight: 900; font-size: 58px; }
+  .tick { width: 56px; height: 56px; border-radius: 50%; background: var(--good); display: grid; place-items: center; }
+  .tick svg { width: 34px; height: 34px; }
+
+  .comment { left: 70px; right: 70px; top: 250px; display: flex; align-items: center; gap: 24px; background: #fff; color: var(--ink);
+    border-radius: 999px; padding: 18px 20px 18px 18px; box-shadow: 0 20px 60px #0007; }
+  .comment .av { width: 84px; height: 84px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 900; font-size: 40px; flex: none; }
+  .comment .tx { flex: 1; font-size: 44px; font-weight: 600; color: #4a5060; white-space: nowrap; }
+  .comment .tx b { color: var(--accent); font-weight: 900; }
+  .comment .send { width: 84px; height: 84px; border-radius: 50%; background: var(--good); display: grid; place-items: center; flex: none; }
+
+  /* captions: Inter, word by word; the key word sits on the blue block of the B-roll headlines */
+  #caps { position: absolute; inset: 0; pointer-events: none; }
+  .cap { position: absolute; left: 60px; right: 60px; text-align: center; opacity: 0; }
+  .cap .w { opacity: 0; display: inline-block; font-weight: 800; letter-spacing: -.01em; line-height: 1.18; margin: 0 .12em;
+    -webkit-text-stroke: .16em #000000d9; paint-order: stroke fill; text-shadow: 0 .06em .3em #0009; }
+  .cap .w.key { white-space: nowrap; position: relative; color: #fff; -webkit-text-stroke: 0; text-shadow: none; padding: 0 .16em; margin: 0 .06em; }
+  .cap .w.key .blk { position: absolute; inset: .08em 0 .02em; background: var(--accent); border-radius: .16em; transform-origin: 0 50%;
+    box-shadow: 0 .1em .4em #0006; }
+  .cap .w.key .t { position: relative; }
+
+  #endcard { position: absolute; inset: 0; opacity: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
+    background: radial-gradient(120% 80% at 50% 40%, #12151cf2, #07080af7); }
+  #endcard .big { font-weight: 900; font-size: 120px; letter-spacing: -.03em; line-height: 1; }
+  #endcard .kw { position: relative; display: inline-block; padding: 6px 30px 14px; margin-top: 10px; }
+  #endcard .kw .blk { position: absolute; inset: 0; background: var(--accent); border-radius: 22px; transform-origin: 0 50%; }
+  #endcard .kw .t { position: relative; font-weight: 900; font-size: 150px; letter-spacing: -.02em; }
+  #endcard .line { font-weight: 600; font-size: 46px; color: #c9d2e3; }
+</style>
+</head>
+<body>
+<div id="film" data-composition-id="film" data-width="1080" data-height="1920">
+  <audio id="om-voice" src="assets/voice.wav" data-start="0" data-duration="55.147" data-track-index="9" data-volume="1"></audio>
+  <div id="talkwrap" data-om-id="talk-frame">
+    <video id="talk" class="clip" data-om-id="talk" data-var-src="talk" src="assets/talk.mp4" data-start="0" data-track-index="0" muted playsinline></video>
+    <div id="shade"></div>
+  </div>
+  <div id="broll"></div>
+  <div class="seam" data-om-id="seam"></div>
+
+  <div class="card stat" id="stat1" data-om-id="stat-applications" style="top:250px">
+    <div class="dot" style="background:var(--accent)">✉</div><div class="num"><span class="v">0</span>+</div><div class="lbl">applications</div>
+  </div>
+  <div class="card stat" id="stat2" data-om-id="stat-callbacks" style="top:380px">
+    <div class="dot" style="background:var(--bad)">✆</div><div class="num" style="color:var(--bad)">0</div><div class="lbl">callbacks</div>
+  </div>
+  <div class="card chip" id="chip" data-om-id="keyword-chip">
+    <div class="k">The job post asks for</div>
+    <div class="v"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>“Data analysis”</div>
+  </div>
+  <div class="card chapter" id="ch1" data-om-id="fix-1"><div class="no">FIX 01</div><div class="rule"></div><div class="tt" data-var-text="fix1">Use the right words</div></div>
+  <div class="card chapter" id="ch2" data-om-id="fix-2"><div class="no">FIX 02</div><div class="rule"></div><div class="tt" data-var-text="fix2">Add numbers</div></div>
+  <div class="card chapter" id="ch3" data-om-id="fix-3"><div class="no">FIX 03</div><div class="rule"></div><div class="tt" data-var-text="fix3">Skip the fancy template</div></div>
+  <div class="card chapter" id="ch4" data-om-id="fix-all"><div class="no">RECAP</div><div class="rule"></div><div class="tt" data-var-text="fixAll">Fix these 3 → more calls</div></div>
+  <div class="card comment" id="comment" data-om-id="comment-bar">
+    <div class="av">R</div><div class="tx">Comment <b data-om-var="keyword">“RESUME”</b></div>
+    <div class="send"><svg viewBox="0 0 24 24" width="40" height="40"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="#fff"/></svg></div>
+  </div>
+
+  <div id="caps" data-om-id="captions"></div>
+
+  <div id="endcard" data-om-id="end-card">
+    <div class="big">Comment</div>
+    <div class="kw"><div class="blk"></div><div class="t" data-var-text="keyword">RESUME</div></div>
+    <div class="line" data-var-text="endLine">Follow for more resume tips</div>
+  </div>
+</div>
+
+<script type="application/json" id="reel-data">__DATA__</script>
+<script type="application/json" id="om-cues">__CUES__</script>
+<script>
+  // declared defaults first, so the film also builds outside the om engine
+  const DECL = JSON.parse(document.documentElement.getAttribute('data-composition-variables'));
+  const V = Object.assign(Object.fromEntries(DECL.map((d) => [d.id, d.default])), OM.vars());
+  const D = JSON.parse(document.getElementById('reel-data').textContent);
+  const $ = (s, r = document) => r.querySelector(s);
+  const film = $('#film');
+  const TALK_END = 55.147;
+  const SEAM = Number(V.splitY), TIGHT = Number(V.tight);
+  film.style.setProperty('--seam', SEAM + 'px');
+  $('.seam').style.top = (SEAM - 4) + 'px';
+  $('#comment b').textContent = `“${V.keyword}”`;
+
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
+  const set = (el, at, v) => tl.set(el, v, at);
+
+  // ---- music: lo-fi explainer direction, ducked under the voice ------------------------------
+  OM.music({ product: 'explainer', variant: 2 });
+
+  // ---- the talk: every jump cut becomes a wide ↔ tight punch-in; each new clip pushes in -------
+  let tight = false;
+  D.cuts.forEach((c, i) => {
+    tight = c.newClip ? false : !tight;
+    if (c.newClip && i > 0) {
+      tl.fromTo('#talk', { scale: 1.14 }, { scale: 1, duration: 0.5, immediateRender: false }, c.t);
+      OM.sfx('whoosh', c.t, { gain: 0.5 });
+    } else set('#talk', c.t, { scale: tight ? TIGHT : 1 });
+  });
+  tl.addLabel('scene:hook', 0);
+
+  // ---- B-roll: full-screen photos are thrown in as cards; split screens drop in over the talk ---
+  const brollRoot = $('#broll');
+  const IW = 941, IH = 1672;                     // all ten photos are 941 × 1672
+  D.broll.forEach((b, i) => {
+    const el = document.createElement('div');
+    el.className = `br ${b.kind}`;
+    el.dataset.omId = `broll-${b.src.split('/').pop().replace('.webp', '')}`;
+    const prev = D.broll[i - 1], next = D.broll[i + 1];
+    const fromSplit = prev && prev.kind === 'split' && Math.abs(prev.end - b.start) < 0.05;
+    const toSplit = next && next.kind === 'split' && Math.abs(next.start - b.end) < 0.05;
+    tl.addLabel(`scene:${el.dataset.omId}`, b.start);
+    if (b.kind === 'full') {
+      el.innerHTML = `<img src="${b.src}">`;
+      brollRoot.appendChild(el);
+      const img = $('img', el), dur = b.end - b.start;
+      tl.fromTo(el, { opacity: 0, scale: 0.7, rotation: i % 2 ? 4 : -4, y: 160, borderRadius: 56 },
+                    { opacity: 1, scale: 1, rotation: 0, y: 0, borderRadius: 0, duration: 0.55, immediateRender: false }, b.start)
+        .fromTo(img, { scale: 1.0 }, { scale: 1.06, duration: dur, ease: 'none', immediateRender: false }, b.start)
+        .fromTo(el, { opacity: 1, scale: 1 }, { opacity: 0, scale: 1.05, duration: 0.22, ease: 'power2.in', immediateRender: false }, b.end - 0.22);
+      OM.sfx('whoosh', b.start, { gain: 0.6 });
+      OM.sfx('thud', b.start + 0.32, { gain: 0.55 });
+    } else {
+      const ch = IH * b.contentH, s = Math.min(1080 / IW, SEAM / ch), w = IW * s;
+      el.innerHTML = `<img class="bg" src="${b.src}"><img class="fg" src="${b.src}" style="width:${w}px;height:${IH * s}px;left:${(1080 - w) / 2}px;top:${(SEAM - ch * s) / 2}px">`;
+      brollRoot.appendChild(el);
+      const fg = $('.fg', el), dur = b.end - b.start;
+      tl.fromTo(el, { opacity: 1, yPercent: -101 }, { yPercent: 0, duration: 0.6, immediateRender: false }, b.start)
+        .fromTo(fg, { scale: 1 }, { scale: 1.04, duration: dur, ease: 'none', transformOrigin: '50% 30%', immediateRender: false }, b.start);
+      if (!fromSplit) {
+        // the talk slides into the lower part of the frame, face first
+        tl.fromTo('#talkwrap', { y: 0, scale: 1 }, { y: SEAM - 380, scale: 0.8, duration: 0.6, ease: 'expo.inOut', immediateRender: false }, b.start - 0.05)
+          .fromTo('.seam', { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.5, immediateRender: false }, b.start + 0.2);
+        OM.sfx('slide', b.start, { gain: 0.35, dur: 0.5 });
+      }
+      OM.sfx('paper', b.start + 0.45, { gain: 0.6 });
+      if (toSplit) tl.set(el, { opacity: 0 }, b.end + 0.6);
+      else {
+        tl.fromTo(el, { yPercent: 0 }, { yPercent: -101, duration: 0.45, ease: 'expo.in', immediateRender: false }, b.end - 0.45)
+          .fromTo('#talkwrap', { y: SEAM - 380, scale: 0.8 }, { y: 0, scale: 1, duration: 0.5, ease: 'expo.inOut', immediateRender: false }, b.end - 0.42)
+          .fromTo('.seam', { opacity: 1 }, { opacity: 0, duration: 0.2, immediateRender: false }, b.end - 0.3);
+        OM.sfx('whip', b.end - 0.4, { gain: 0.4 });
+      }
+    }
+  });
+
+  // ---- packaging, each landing on its word ----------------------------------------------------
+  const cue = (w, n) => { try { return OM.cue(w, n); } catch { return null; } };
+  function cardIn(el, at, out, sound = 'pop') {
+    tl.fromTo(el, { autoAlpha: 0, y: 30, scale: 0.92 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.55, ease: 'back.out(1.6)', immediateRender: false }, at)
+      .fromTo(el, { autoAlpha: 1, y: 0, scale: 1 }, { autoAlpha: 0, y: -16, duration: 0.28, ease: 'power2.in', immediateRender: false }, out - 0.28);
+    if (sound) OM.sfx(sound, at + 0.08, { gain: 0.6 });
+  }
+  // the hook: applications pile up, callbacks stay at zero
+  const tThousands = cue('thousands') ?? 1.24, tCalling = cue('calling') ?? 3.45;
+  cardIn('#stat1', tThousands - 0.35, 4.38);
+  const c1 = { v: 0 };
+  tl.fromTo(c1, { v: 0 }, { v: 1000, immediateRender: false, duration: 0.9, ease: 'power3.out', onUpdate: () => { $('#stat1 .v').textContent = Math.round(c1.v).toLocaleString('en-US'); } }, tThousands - 0.3);
+  OM.sfx('count', tThousands - 0.25, { dur: 0.8, gain: 0.4 });
+  cardIn('#stat2', tCalling - 0.25, 4.38, 'thud');
+
+  // the fixes: a chapter card where each one starts
+  const chapters = [['#ch1', 7.36, 9.0], ['#ch2', 21.84, 23.3], ['#ch3', 33.8, 35.12], ['#ch4', 46.1, 47.78]];
+  chapters.forEach(([sel, a, b], k) => {
+    tl.addLabel(`scene:fix-${k + 1}`, a);
+    tl.fromTo(sel, { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, immediateRender: false }, a)
+      .fromTo(`${sel} .rule`, { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'expo.inOut', immediateRender: false }, a + 0.1)
+      .fromTo(sel, { autoAlpha: 1, x: 0 }, { autoAlpha: 0, x: -24, duration: 0.25, ease: 'power2.in', immediateRender: false }, b - 0.25);
+    OM.sfx('impact', a + 0.05, { gain: k === 3 ? 0.5 : 0.35 });
+  });
+
+  // keyword match: the job post's exact phrase
+  const tData = cue('data') ?? 14.68;
+  cardIn('#chip', tData - 0.2, 18.86);
+  OM.sfx('ding', tData + 0.25, { gain: 0.5 });
+
+  // comment bar types the keyword
+  const tComment = cue('comment') ?? 49.95;
+  cardIn('#comment', Math.max(51.05, tComment), TALK_END + 0.05, 'pop');
+  OM.sfx('type', 51.3, { dur: 0.6, gain: 0.35 });
+
+  // ---- captions: word by word, key word on the blue block ------------------------------------
+  const capsRoot = $('#caps');
+  const inBroll = (t0, t1, kind) => D.broll.some((b) => b.kind === kind && t0 < b.end - 0.1 && t1 > b.start + 0.1);
+  D.captions.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = 'cap';
+    el.dataset.omId = `caption-${i + 1}`;
+    const y = inBroll(c.start, c.end, 'split') ? SEAM : inBroll(c.start, c.end, 'full') ? Number(V.capYFull) : Number(V.capY);
+    el.style.top = y + 'px';
+    el.style.transform = 'translateY(-50%)';
+    el.style.fontSize = V.capSize + 'px';
+    // *key* markup → words
+    let key = false;
+    const toks = c.text.split(/\s+/).map((raw) => {
+      let w = raw, k = key;
+      if (w.startsWith('*')) { k = key = true; w = w.slice(1); }
+      const m = w.match(/\*([.,!?:;"'”)]*)$/);
+      if (m) { w = w.slice(0, m.index) + m[1]; key = false; }
+      return { w, k };
+    });
+    const units = [];                                    // a key phrase is one unit, timed by its first word
+    toks.forEach((t, j) => {
+      const last = units[units.length - 1];
+      if (t.k && last && last.k) last.w += ' ' + t.w; else units.push({ ...t, at: c.times[j] ?? c.start + j * 0.22 });
+    });
+    el.innerHTML = units.map((t) => t.k
+      ? `<span class="w key"><span class="blk"></span><span class="t">${t.w}</span></span>`
+      : `<span class="w">${t.w}</span>`).join(' ');
+    capsRoot.appendChild(el);
+    const spans = el.querySelectorAll('.w');
+    tl.set(el, { opacity: 1 }, c.start).set(el, { opacity: 0 }, Math.min(c.end, TALK_END));
+    spans.forEach((sp, j) => {
+      const at = units[j].at;
+      if (sp.classList.contains('key')) {
+        tl.fromTo(sp, { opacity: 0, scale: 1.35, rotation: -3 }, { opacity: 1, scale: 1, rotation: -1.5, duration: 0.42, ease: 'back.out(2.2)', immediateRender: false }, at)
+          .fromTo($('.blk', sp), { scaleX: 0 }, { scaleX: 1, duration: 0.32, immediateRender: false }, at + 0.02);
+      } else {
+        tl.fromTo(sp, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.24, ease: 'power3.out', immediateRender: false }, at);
+      }
+    });
+    if (el.querySelector('.key')) OM.sfx('tick', c.times[toks.findIndex((t) => t.k)] ?? c.start, { gain: 0.25 });
+  });
+
+  // ---- end card ----------------------------------------------------------------------------
+  const END = TALK_END;
+  tl.addLabel('scene:end', END);
+  tl.fromTo('#endcard', { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out', immediateRender: false }, END)
+    .fromTo('#endcard .big', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, immediateRender: false }, END + 0.1)
+    .fromTo('#endcard .kw', { opacity: 0, scale: 1.4, rotation: -4 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.6, ease: 'back.out(2)', immediateRender: false }, END + 0.4)
+    .fromTo('#endcard .kw .blk', { scaleX: 0 }, { scaleX: 1, duration: 0.4, immediateRender: false }, END + 0.42)
+    .fromTo('#endcard .line', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, immediateRender: false }, END + 0.9);
+  OM.sfx('riser', END, { dur: 0.4, gain: 0.4 });
+  OM.sfx('impact', END + 0.42, { gain: 0.6 });
+  OM.sfx('chime', END + 0.95, { gain: 0.5 });
+  tl.to({}, { duration: Number(V.endHold) || 3.4 }, END);
+
+  (window.__timelines = window.__timelines || {})['film'] = tl;
+</script>
+</body>
+</html>
